@@ -1,0 +1,41 @@
+
+type CrucibleEntity @entity {
+    id: ID!
+    owner: Bytes!            
+    timestamp: BigInt!
+
+    index: Int
+
+    locks: [Lock!]  @derivedFrom(field: "crucible")
+}
+
+type Lock @entity {
+    # id = crucibleId-lockID
+    id: ID!
+    delegate: Bytes!
+    token: Bytes!
+    # different between bigint and bigdecimal?
+    balance: BigInt!
+    suscriptions: [Suscription!] @derivedFrom(field: "lock")
+    suscriptionAmount: BigInt!
+
+    crucible: CrucibleEntity!
+}
+
+type Counters @entity {
+    id: ID!
+    count: Int!
+}
+
+enum SuscriptionType {
+    LOCK
+    UNLOCK
+}
+
+type Suscription @entity {
+    id: ID!
+    type: SuscriptionType!
+    amount: BigInt!
+    timestamp: BigInt!
+    lock: Lock!
+}

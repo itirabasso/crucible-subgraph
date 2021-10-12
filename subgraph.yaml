@@ -1,0 +1,63 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: CrucibleFactory
+    network: rinkeby
+    source:
+      address: "0xf92d86483438bde1d68e501ce15470155dee08b3"
+      abi: CrucibleFactory
+      startBlock: 9104595
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - CrucibleEntity
+        - Approval
+        - ApprovalForAll
+        - InstanceAdded
+        - InstanceRemoved
+        - Transfer
+      abis:
+        - name: CrucibleFactory
+          file: ./abis/CrucibleFactory.json
+        - name: Crucible
+          file: ./abis/Crucible.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: InstanceAdded(address)
+          handler: handleInstanceAdded
+        - event: InstanceRemoved(address)
+          handler: handleInstanceRemoved
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/factory.ts
+
+templates:
+  - kind: ethereum/contract
+    name: CrucibleTemplate
+    network: rinkeby
+    source:
+      abi: Crucible
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/crucible.ts
+      entities:
+        - Crucible
+      abis:
+        - name: Crucible
+          file: ./abis/Crucible.json
+      eventHandlers:
+        - event: Locked(address,address,uint256)
+          handler: handleLocked
+        - event: Unlocked(address,address,uint256)
+          handler: handleUnlocked
+        - event: RageQuit(address,address,bool,string)
+          handler: handleRageQuit
