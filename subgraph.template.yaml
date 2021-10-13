@@ -34,7 +34,7 @@ dataSources:
 
 templates:
   - kind: ethereum/contract
-    name: Crucible
+    name: CrucibleTemplate
     network: {{network}}
     source:
       abi: Crucible
