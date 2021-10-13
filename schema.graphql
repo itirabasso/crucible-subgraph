@@ -14,10 +14,13 @@ type Lock @entity {
     id: ID!
     delegate: Bytes!
     token: Bytes!
-    # different between bigint and bigdecimal?
     balance: BigInt!
-    suscriptions: [Suscription!] @derivedFrom(field: "lock")
-    suscriptionAmount: BigInt!
+#    VaultEvent: [VaultEvent!] @derivedFrom(field: "lock")
+
+
+    stakesAmount: BigInt!
+    stakes: [Stake!]! @derivedFrom(field: "lock")
+    unstakes: [Unstake!]! @derivedFrom(field: "lock")
 
     crucible: CrucibleEntity!
 }
@@ -27,15 +30,34 @@ type Counters @entity {
     count: Int!
 }
 
-enum SuscriptionType {
-    LOCK
-    UNLOCK
-}
 
-type Suscription @entity {
+type Stake @entity {
     id: ID!
-    type: SuscriptionType!
     amount: BigInt!
     timestamp: BigInt!
     lock: Lock!
 }
+
+type Unstake @entity {
+    id: ID!
+    amount: BigInt!
+    duration: BigInt!
+
+    lock: Lock!
+}
+
+
+
+# old subscription entity
+enum VaultEventType {
+    LOCK
+    UNLOCK
+}
+type VaultEvent @entity {
+    id: ID!
+    type: VaultEventType!
+    amount: BigInt!
+    timestamp: BigInt!
+    lock: Lock!
+}
+

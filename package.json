@@ -4,6 +4,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
+    "prepare:rinkeby": "mustache config/config.rinkeby.json subgraph.template.yaml > subgraph.yaml",
     "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ crucible",
     "create-local": "graph create --node http://localhost:8020/ crucible",
     "remove-local": "graph remove --node http://localhost:8020/ crucible",
@@ -11,6 +12,7 @@
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.22.3",
-    "@graphprotocol/graph-ts": "0.22.1"
+    "@graphprotocol/graph-ts": "0.22.1",
+    "mustache": "^4.2.0"
   }
 }
