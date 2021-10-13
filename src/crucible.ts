@@ -10,7 +10,6 @@ import {
   Bytes,
   crypto,
   ByteArray,
-  BigDecimal,
   BigInt,
   store,
 } from "@graphprotocol/graph-ts";
@@ -45,14 +44,11 @@ export function handleLocked(event: Locked): void {
   let token = event.params.token;
 
   let id = getLockId(address, delegate, token)  
-  log.debug("{} - {}", [address.toHexString(), id]);
   // if crucible exists and id is not null
   if (crucible != null && id != null) {
     let lock = Lock.load(id);
     // if lock doesn't exist we create it.
-    log.debug("loaded {}", [id]);
     if (lock == null) {
-      log.debug("is null", []);
       lock = new Lock(id);
       lock.delegate = delegate;
       lock.token = token;
@@ -88,19 +84,15 @@ export function handleLocked(event: Locked): void {
 
 export function handleUnlocked(event: Unlocked): void {
   let address = event.address;
-  log.warning("unlockkkkkkk", [])
   let crucible = CrucibleEntity.load(address.toHexString().toLowerCase());
 
   let delegate = event.params.delegate;
   let token = event.params.token;
 
-  let lockID = crypto.keccak256(concat(token, delegate));
   let id = getLockId(address, delegate, token)
-  log.warning('unlocking lock {} at {}', [lockID.toHexString(), address.toHexString()])
   if (crucible != null) {
     let lock = Lock.load(id);
     if (lock != null) {
-      log.warning('unlock for {}', [crucible.id])
       lock.suscriptionAmount = lock.suscriptionAmount.plus(BigInt.fromI32(1));
       // lockId-suscription length
       let suscriptionId = lock.id
