@@ -14,7 +14,7 @@ import {
   BigInt,
   store,
 } from "@graphprotocol/graph-ts";
-import { CrucibleEntity, Lock, Suscription } from "../generated/schema";
+import { CrucibleEntity, Lock, Stake, Unstake } from "../generated/schema";
 
 export function concat(a: ByteArray, b: ByteArray): ByteArray {
   let out = new Uint8Array(a.length + b.length);
@@ -58,7 +58,7 @@ export function handleLocked(event: Locked): void {
       lock.token = token;
       lock.balance = BigInt.zero();
       lock.crucible = crucible.id;
-      lock.suscriptionAmount = BigInt.fromI32(0);
+      lock.stakesAmount = BigInt.fromI32(0);
     } else {
     }
 
@@ -66,18 +66,17 @@ export function handleLocked(event: Locked): void {
     // increment lock's balance
     lock.balance = lock.balance.plus(event.params.amount);
     // increment amount of suscription
-    lock.suscriptionAmount = lock.suscriptionAmount.plus(BigInt.fromI32(1));
+    // lock.suscriptionAmount = lock.suscriptionAmount.plus(BigInt.fromI32(1));
     // lockId-suscription length
-    let suscriptionId = lock.id
+    let stakeId = lock.id
       + "-"
-      + lock.suscriptionAmount.toString();
+      + lock.stakesAmount.toString();
     
-    let suscription = new Suscription(suscriptionId);
-    suscription.type = "LOCK";
-    suscription.amount = event.params.amount;
-    suscription.timestamp = event.block.timestamp;
-    suscription.lock = id;
-    suscription.save();
+    let stake = new Stake(stakeId);
+    stake.amount = event.params.amount;
+    stake.timestamp = event.block.timestamp;
+    stake.lock = id;
+    stake.save();
     
     lock.save();
 
@@ -88,7 +87,6 @@ export function handleLocked(event: Locked): void {
 
 export function handleUnlocked(event: Unlocked): void {
   let address = event.address;
-  log.warning("unlockkkkkkk", [])
   let crucible = CrucibleEntity.load(address.toHexString().toLowerCase());
 
   let delegate = event.params.delegate;
@@ -101,18 +99,44 @@ export function handleUnlocked(event: Unlocked): void {
     let lock = Lock.load(id);
     if (lock != null) {
       log.warning('unlock for {}', [crucible.id])
-      lock.suscriptionAmount = lock.suscriptionAmount.plus(BigInt.fromI32(1));
+      // lock.suscriptionAmount = lock.suscriptionAmount.plus(BigInt.fromI32(1));
+      let stakesAmount = lock.stakes.length
+      let unstakesAmount = lock.unstakes.length
       // lockId-suscription length
-      let suscriptionId = lock.id
+      let unstakeId = lock.id
       + "-"
-      + lock.suscriptionAmount.toString();
+      + unstakesAmount.toString();
       
-      let suscription = new Suscription(suscriptionId);
-      suscription.type = "UNLOCK";
-      suscription.amount = event.params.amount;
-      suscription.timestamp = event.block.timestamp;
-      suscription.lock = id;
-      suscription.save();
+      let unstakeAmount = event.params.amount
+      let removedStakes = 0
+      let stakes = lock.stakes
+      while (unstakeAmount.gt(BigInt.zero())) {
+        // at least 1 stake must exist
+        let lastStakeId = lock.stakes[stakes.length - 1]
+        let lastStake = Stake.load(lastStakeId)
+        if (lastStake == null) return;
+        // duration of subscription
+        let duration = event.block.timestamp.minus(lastStake.timestamp)
+
+        let unstake = new Unstake(unstakeId)
+
+        // is a partial unstake?
+        if (lastStake.amount > unstakeAmount) {
+          unstake.amount = unstakeAmount
+        } else {
+          // full unstake
+          unstake.amount = lastStake.amount
+          // decrease unstake amount
+          unstakeAmount.minus(lastStake.amount)
+          // remove last stake entity
+          store.remove('Stake', lastStakeId)
+          stakes = stakes.slice(0, stakes.length)
+        }
+        unstake.duration = duration
+        unstake.lock = id
+        unstake.save()
+        
+      }
       
       lock.balance = lock.balance.minus(event.params.amount);
       // if the balance zero remove entity from store
