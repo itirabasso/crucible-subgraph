@@ -4,6 +4,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
+    "prepare:goerli": "mustache config/config.goerli.json subgraph.template.yaml > subgraph.yaml",
     "prepare:rinkeby": "mustache config/config.rinkeby.json subgraph.template.yaml > subgraph.yaml",
     "prepare:mainnet": "mustache config/config.mainnet.json subgraph.template.yaml > subgraph.yaml",
     "prepare:goerli": "mustache config/config.goerli.json subgraph.template.yaml > subgraph.yaml",
