@@ -17,19 +17,14 @@ type Lock @entity {
     balance: BigInt!
 #    VaultEvent: [VaultEvent!] @derivedFrom(field: "lock")
 
-
-    stakesAmount: BigInt!
+    stakesLength: BigInt!
     stakes: [Stake!]! @derivedFrom(field: "lock")
+
+    unstakesLength: BigInt!
     unstakes: [Unstake!]! @derivedFrom(field: "lock")
 
     crucible: CrucibleEntity!
 }
-
-type Counters @entity {
-    id: ID!
-    count: Int!
-}
-
 
 type Stake @entity {
     id: ID!
@@ -46,6 +41,11 @@ type Unstake @entity {
     lock: Lock!
 }
 
+
+type Counters @entity {
+    id: ID!
+    count: Int!
+}
 
 
 # old subscription entity
