@@ -91,3 +91,7 @@ export function createStake(
   stake.lock = lock.id;
   return stake;
 }
+
+export function isAddressZero(address: Address): boolean {
+  return address.equals(Address.fromString("0x0x0000000000000000000000000000000000000000"))
+}

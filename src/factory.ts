@@ -2,53 +2,52 @@ import { Address, BigInt, log, store } from "@graphprotocol/graph-ts";
 import {
   InstanceAdded,
   InstanceRemoved,
-  Transfer
-} from "../generated/CrucibleFactory/CrucibleFactory"
+  Transfer,
+} from "../generated/CrucibleFactory/CrucibleFactory";
 
-import {Counters, CrucibleEntity} from "../generated/schema"
+import { Counters, CrucibleEntity } from "../generated/schema";
 import { CrucibleTemplate } from "../generated/templates";
-import { getCrucibleIdFromTokenId } from "./utils";
-
+import {
+  getCrucibleId,
+  getCrucibleIdFromTokenId,
+  isAddressZero,
+} from "./utils";
 
 export function handleInstanceAdded(event: InstanceAdded): void {
+  CrucibleTemplate.create(event.params.instance);
 
-  CrucibleTemplate.create(event.params.instance)
+  let crucibleAddress = event.params.instance;
+  let owner = event.address;
+  let counter = bumpCrucibleCounter();
+
+  let crucibleId = getCrucibleId(crucibleAddress);
+  let crucible = new CrucibleEntity(crucibleId);
+  crucible.owner = owner;
+  crucible.timestamp = event.block.timestamp;
+  crucible.index = counter.count;
+
+  crucible.txhash = event.transaction.hash;
+  crucible.blockNumber = event.block.number;
+
+  crucible.save();
+  log.warning("factory: crucible {} created", [crucibleId]);
 }
 
-export function handleInstanceRemoved(event: InstanceRemoved): void {}
-
-function isAddressZero(address: Address): boolean {
-  return address.equals(Address.fromString("0x0x0000000000000000000000000000000000000000"))
-}
-
-function createCrucible(event: Transfer): void {
+function bumpCrucibleCounter(): Counters {
   // find a way to create an initialization method
-  let counter = Counters.load("crucible-counter")
+  let counter = Counters.load("crucible-counter");
   if (counter == null) {
-    counter = new Counters("crucible-counter")
-    counter.count = 0
+    counter = new Counters("crucible-counter");
   }
-  counter.count = counter.count + 1
-  counter.save()
-
-  let to = event.params.to
-  let tokenId = event.params.tokenId
-
-  let entity = new CrucibleEntity(tokenId.toHexString().toLowerCase());
-  entity.timestamp = event.block.timestamp
-  entity.owner = to
-  entity.index = counter.count
-  // 
-  entity.blockNumber = event.block.number
-  entity.txhash = event.transaction.hash
-
-  entity.save()
+  counter.count = counter.count.plus(BigInt.fromI32(1));
+  counter.save();
+  return counter;
 }
 
 export function handleTransfer(event: Transfer): void {
-  let from = event.params.from
-  let to = event.params.to
-  let tokenId = event.params.tokenId
+  let from = event.params.from;
+  let to = event.params.to;
+  let tokenId = event.params.tokenId;
 
   // creation
   if (isAddressZero(from)) {
@@ -56,16 +55,14 @@ export function handleTransfer(event: Transfer): void {
   }
   // transfer
   if (!isAddressZero(to) && !isAddressZero(from)) {
-    let id = getCrucibleIdFromTokenId(tokenId)
-    log.warning('transfering crucible {} from {} to {}', [id, from.toHex(), to.toHex()])
-    let crucible = CrucibleEntity.load(id)
+    let id = getCrucibleIdFromTokenId(tokenId);
+    log.warning("transfering crucible {} from {} to {}", [id, from.toHex(), to.toHex()]);
+    let crucible = CrucibleEntity.load(id);
     if (crucible != null) {
-      crucible.owner = to      
-      crucible.save()
+      crucible.owner = to;
+      crucible.save();
     } else {
       log.error("crucibleTransfer: crucible {} not found", [id]);
     }
-    
   }
-
 }
