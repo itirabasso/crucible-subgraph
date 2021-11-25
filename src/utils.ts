@@ -7,7 +7,7 @@ import {
   Value,
   log,
 } from "@graphprotocol/graph-ts";
-import { Crucible, Lock, Stake } from "../generated/schema";
+import { CrucibleEntity, Lock, Stake } from "../generated/schema";
 
 export function concat(a: ByteArray, b: ByteArray): ByteArray {
   let out = new Uint8Array(a.length + b.length);
@@ -69,7 +69,7 @@ export function createLock(
   id: string,
   delegate: Address,
   token: Address,
-  crucible: Crucible
+  crucible: CrucibleEntity
 ): Lock {
   log.warning("creating lock: {}", [id]);
   let lock = new Lock(id);
