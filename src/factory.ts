@@ -1,4 +1,4 @@
-import { Address, BigInt, store } from "@graphprotocol/graph-ts";
+import { Address, BigInt, log, store } from "@graphprotocol/graph-ts";
 import {
   InstanceAdded,
   InstanceRemoved,
@@ -7,7 +7,7 @@ import {
 
 import {Counters, CrucibleEntity} from "../generated/schema"
 import { CrucibleTemplate } from "../generated/templates";
-import { Crucible } from "../generated/templates/CrucibleTemplate/Crucible";
+import { getCrucibleIdFromTokenId } from "./utils";
 
 
 export function handleInstanceAdded(event: InstanceAdded): void {
@@ -52,14 +52,18 @@ export function handleTransfer(event: Transfer): void {
 
   // creation
   if (isAddressZero(from)) {
-    createCrucible(event)
+    // createCrucible(event)
   }
   // transfer
   if (!isAddressZero(to) && !isAddressZero(from)) {
-    let entity = CrucibleEntity.load(tokenId.toHexString().toLowerCase())
-    if (entity != null) {
-      entity.owner = to      
-      entity.save()
+    let id = getCrucibleIdFromTokenId(tokenId)
+    log.warning('transfering crucible {} from {} to {}', [id, from.toHex(), to.toHex()])
+    let crucible = CrucibleEntity.load(id)
+    if (crucible != null) {
+      crucible.owner = to      
+      crucible.save()
+    } else {
+      log.error("crucibleTransfer: crucible {} not found", [id]);
     }
     
   }
