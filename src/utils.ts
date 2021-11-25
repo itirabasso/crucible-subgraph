@@ -21,14 +21,14 @@ export function concat(a: ByteArray, b: ByteArray): ByteArray {
 }
 
 export function getLockId(
-  crucible: Address,
+  crucibleId: string,
   delegate: Address,
   token: Address
 ): string {
   // onchain lockID
   let lockID = crypto.keccak256(concat(delegate, token));
   // entity id = lockID-crucible_address
-  let id = lockID.toHexString() + "-" + crucible.toHexString();
+  let id = lockID.toHexString() + "-" + crucibleId;
   return id;
 }
 
@@ -39,16 +39,20 @@ export function getUnstakeId(lock: Lock, index: BigInt): string {
   return lock.id + "-unstake-" + index.toString();
 }
 
+export function padAddress(address: string): string {
+  return '0x' + address.slice(2).padStart(40, '0');
+}
+
 export function getCrucibleId(address: Address): string {
-  return address.toHexString();
+  return padAddress(address.toHexString().toLowerCase());
 }
 
 export function getCrucibleIdFromTokenId(tokenId: BigInt): string {
-  return tokenId.toHexString().slice(-42);
+  return padAddress(tokenId.toHexString().toLowerCase())
 }
 
 export function getAludelId(address: Address): string {
-  return address.toHexString();
+  return padAddress(address.toHexString().toLowerCase());
 }
 
 export function getRewardId(
@@ -57,11 +61,11 @@ export function getRewardId(
   token: Address
 ): string {
   return (
-    crucible.toHexString() +
+    getCrucibleId(crucible) +
     "-" +
-    aludel.toHexString() +
+    getAludelId(aludel) +
     "-" +
-    token.toHexString()
+    padAddress(token.toHexString().toLowerCase())
   );
 }
 
@@ -71,7 +75,7 @@ export function createLock(
   token: Address,
   crucible: CrucibleEntity
 ): Lock {
-  log.warning("creating lock: {}", [id]);
+  // log.warning("creating lock: {}", [id]);
   let lock = new Lock(id);
   lock.delegate = delegate;
   lock.token = token;
