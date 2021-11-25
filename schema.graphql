@@ -7,6 +7,9 @@ type CrucibleEntity @entity {
     index: Int
 
     locks: [Lock!]  @derivedFrom(field: "crucible")
+
+    blockNumber: BigInt!
+    txhash: Bytes!
 }
 
 type Lock @entity {
@@ -15,7 +18,6 @@ type Lock @entity {
     delegate: Bytes!
     token: Bytes!
     balance: BigInt!
-#    VaultEvent: [VaultEvent!] @derivedFrom(field: "lock")
 
     stakesLength: BigInt!
     stakes: [Stake!]! @derivedFrom(field: "lock")
@@ -37,7 +39,7 @@ type Unstake @entity {
     id: ID!
     amount: BigInt!
     duration: BigInt!
-
+    timestamp: BigInt!
     lock: Lock!
 }
 
@@ -46,18 +48,3 @@ type Counters @entity {
     id: ID!
     count: Int!
 }
-
-
-# old subscription entity
-enum VaultEventType {
-    LOCK
-    UNLOCK
-}
-type VaultEvent @entity {
-    id: ID!
-    type: VaultEventType!
-    amount: BigInt!
-    timestamp: BigInt!
-    lock: Lock!
-}
-
