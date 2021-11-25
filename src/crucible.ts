@@ -13,35 +13,7 @@ import {
   store,
 } from "@graphprotocol/graph-ts";
 import { CrucibleEntity, Lock, Stake, Unstake } from "../generated/schema";
-
-export function concat(a: ByteArray, b: ByteArray): ByteArray {
-  let out = new Uint8Array(a.length + b.length);
-  for (let i = 0; i < a.length; i++) {
-    out[i] = a[i];
-  }
-  for (let j = 0; j < b.length; j++) {
-    out[a.length + j] = b[j];
-  }
-  return Bytes.fromUint8Array(out);
-}
-
-function getLockId(crucible: Address, delegate: Address, token: Address): string {
-  // onchain lockID
-  let lockID = crypto.keccak256(concat(delegate, token));
-  // entity id = lockID-crucible_address
-  let id = lockID.toHex().toLowerCase() + "-" + crucible.toHexString().toLowerCase();
-  return id
-}
-function getStakeId(lock: Lock, index: BigInt): string {
-  return lock.id
-    + "-stake-"
-    + index.toString();
-}
-function getUnstakeId(lock: Lock, index: BigInt): string {
-  return lock.id
-    + "-unstake-"
-    + index.toString();
-}
+import {getLockId, getStakeId, getUnstakeId} from "./utils";
 
 export function handleLocked(event: Locked): void {
   let address = event.address;
