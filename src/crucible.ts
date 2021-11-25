@@ -13,22 +13,23 @@ import {
   store,
 } from "@graphprotocol/graph-ts";
 import { CrucibleEntity, Lock, Stake, Unstake } from "../generated/schema";
-import {getLockId, getStakeId, getUnstakeId} from "./utils";
+import {getCrucibleId, getLockId, getStakeId, getUnstakeId} from "./utils";
 
 export function handleLocked(event: Locked): void {
-  let address = event.address;
-  let crucible = CrucibleEntity.load(address.toHexString().toLowerCase());
+  let crucibleId = getCrucibleId(event.address);
+  let crucible = CrucibleEntity.load(crucibleId);
 
   let delegate = event.params.delegate;
   let token = event.params.token;
 
-  let id = getLockId(address, delegate, token)
+  let id = getLockId(crucibleId, delegate, token)
   // if crucible exists and id is not null
   if (crucible == null) {
-    log.warning("crucible {} not found", [address.toHexString()]);
+    // log.warning("crucible {} not found", [crucibleId]);
     return
   }
   let lock = Lock.load(id);
+
   // if lock doesn't exist we create it.
   if (lock == null) {
     lock = new Lock(id);
@@ -56,23 +57,23 @@ export function handleLocked(event: Locked): void {
 }
 
 export function handleUnlocked(event: Unlocked): void {
-  let address = event.address;
+  let crucibleId = getCrucibleId(event.address);
   // load crucible
-  let crucible = CrucibleEntity.load(address.toHexString().toLowerCase());
+  let crucible = CrucibleEntity.load(crucibleId);
   if (crucible == null) {
-    log.warning("crucible {} not found", [address.toHexString()]);
+    // log.warning("crucible {} not found", [crucibleId]);
     return
   }
 
   let delegate = event.params.delegate;
   let token = event.params.token;
 
-  let id = getLockId(address, delegate, token)
+  let id = getLockId(crucibleId, delegate, token)
 
   // load lock
   let lock = Lock.load(id);
   if (lock == null) {
-    log.error("unlocking invalid lock: {}", [id]);
+    // log.error("unlocking invalid lock: {}", [id]);
     return;
   }
 
