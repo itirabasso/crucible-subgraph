@@ -1,6 +1,5 @@
 import {
   Locked,
-  Locked__Params,
   RageQuit,
   Unlocked,
 } from "../generated/templates/CrucibleTemplate/Crucible";
@@ -25,8 +24,6 @@ export function concat(a: ByteArray, b: ByteArray): ByteArray {
   }
   return Bytes.fromUint8Array(out);
 }
-
-function addSuscription(lock: Lock): void { }
 
 function getLockId(crucible: Address, delegate: Address, token: Address): string {
   // onchain lockID
@@ -84,7 +81,6 @@ export function handleLocked(event: Locked): void {
   stake.lock = id;
   stake.save();
 
-
 }
 
 export function handleUnlocked(event: Unlocked): void {
@@ -108,8 +104,6 @@ export function handleUnlocked(event: Unlocked): void {
     return;
   }
 
-  log.warning('unlock for {}', [crucible.id])
-
   let amountToUnstake = event.params.amount
   let stakesLength = lock.stakesLength
   let unstakesLength = lock.unstakesLength
@@ -127,7 +121,7 @@ export function handleUnlocked(event: Unlocked): void {
     unstakesLength = unstakesLength.plus(BigInt.fromI32(1))
 
     let unstakeId = getUnstakeId(lock, unstakesLength)
-    log.warning("new unstake {}", [unstakeId])
+    // log.warning("new unstake {}", [unstakeId])
     let unstake = new Unstake(unstakeId)
     // is a partial unstake?
     if (lastStake.amount > amountToUnstake) {
@@ -148,6 +142,7 @@ export function handleUnlocked(event: Unlocked): void {
 
     // update new unstake attributes
     unstake.duration = duration
+    unstake.timestamp = event.block.timestamp;
     unstake.lock = id
     unstake.save()
   }
