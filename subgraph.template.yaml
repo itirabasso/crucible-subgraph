@@ -16,7 +16,6 @@ dataSources:
       entities:
         - CrucibleEntity
         - InstanceAdded
-        - InstanceRemoved
         - Transfer
       abis:
         - name: CrucibleFactory
@@ -26,8 +25,6 @@ dataSources:
       eventHandlers:
         - event: InstanceAdded(address)
           handler: handleInstanceAdded
-        - event: InstanceRemoved(address)
-          handler: handleInstanceRemoved
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/factory.ts
