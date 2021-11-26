@@ -25,7 +25,7 @@ export function handleLocked(event: Locked): void {
   let id = getLockId(crucibleId, delegate, token)
   // if crucible exists and id is not null
   if (crucible == null) {
-    // log.warning("crucible {} not found", [crucibleId]);
+    log.warning("crucible {} not found", [crucibleId]);
     return
   }
   let lock = Lock.load(id);
@@ -39,6 +39,9 @@ export function handleLocked(event: Locked): void {
     lock.crucible = crucible.id;
     lock.stakesLength = BigInt.fromI32(0);
     lock.unstakesLength = BigInt.fromI32(0);
+
+    // log.warning("new lock in {}  with {} at {}", [crucible.id, token.toHexString(), delegate.toHexString()]);
+
   } else {
 
   }
@@ -48,6 +51,8 @@ export function handleLocked(event: Locked): void {
   lock.save();
 
   let stakeId = getStakeId(lock, lock.stakesLength)
+  // log.warning("new stake: {}", [stakeId]);
+
   let stake = new Stake(stakeId);
   stake.amount = event.params.amount;
   stake.timestamp = event.block.timestamp;
@@ -61,7 +66,7 @@ export function handleUnlocked(event: Unlocked): void {
   // load crucible
   let crucible = CrucibleEntity.load(crucibleId);
   if (crucible == null) {
-    // log.warning("crucible {} not found", [crucibleId]);
+    log.warning("crucible {} not found", [crucibleId]);
     return
   }
 
@@ -73,7 +78,7 @@ export function handleUnlocked(event: Unlocked): void {
   // load lock
   let lock = Lock.load(id);
   if (lock == null) {
-    // log.error("unlocking invalid lock: {}", [id]);
+    log.error("unlocking invalid lock: {}", [id]);
     return;
   }
 
@@ -86,13 +91,16 @@ export function handleUnlocked(event: Unlocked): void {
     // let lastStakeId = lock.stakes[.length - 1]
     let lastStakeId = getStakeId(lock, stakesLength)
     let lastStake = Stake.load(lastStakeId)
-    if (lastStake == null) return;
-
+    if (lastStake == null) {
+      log.warning('last stake not found {}', [lastStakeId])
+      return;
+    }
+    
     // duration of subscription
     let duration = event.block.timestamp.minus(lastStake.timestamp)
     // increase amount of unstakes
     unstakesLength = unstakesLength.plus(BigInt.fromI32(1))
-
+    
     let unstakeId = getUnstakeId(lock, unstakesLength)
     // log.warning("new unstake {}", [unstakeId])
     let unstake = new Unstake(unstakeId)
@@ -100,6 +108,7 @@ export function handleUnlocked(event: Unlocked): void {
     if (lastStake.amount > amountToUnstake) {
       unstake.amount = amountToUnstake
       // reduce stake balance
+      lastStake.amount = lastStake.amount.minus(amountToUnstake)
       amountToUnstake = BigInt.zero()
       lastStake.save()
     } else {
@@ -108,6 +117,7 @@ export function handleUnlocked(event: Unlocked): void {
       // decrease unstake amount
       amountToUnstake = amountToUnstake.minus(lastStake.amount)
       // remove last stake entity
+      // log.warning('removing lastStakeId: {}', [lastStakeId])
       store.remove('Stake', lastStakeId)
       // stakes = stakes.slice(0, stakes.length)
       stakesLength = stakesLength.minus(BigInt.fromI32(1))
@@ -134,6 +144,6 @@ export function handleRageQuit(event: RageQuit): void {
 
   if (crucible != null) {
   } else {
-    log.warning("crucible {} not found", [address.toHexString()]);
+    log.error("crucible {} not found", [address.toHexString()]);
   }
 }
