@@ -1,5 +1,6 @@
-import { Address, BigInt, log, store } from "@graphprotocol/graph-ts";
+import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import {
+  ApprovalForAll,
   InstanceAdded,
   InstanceRemoved,
   Transfer,

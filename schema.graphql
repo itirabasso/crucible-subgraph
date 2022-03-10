@@ -3,13 +3,8 @@ type CrucibleEntity @entity {
     id: ID!
     owner: Bytes!            
     timestamp: BigInt!
-<<<<<<< HEAD
-
-    index: BigInt
-=======
     blockNumber: BigInt!
     index: Int
->>>>>>> 32deb48 (add blockNumber to Crucible entity)
 
     locks: [Lock!]  @derivedFrom(field: "crucible")
 
