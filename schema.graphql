@@ -43,8 +43,11 @@ type Unstake @entity {
     lock: Lock!
 }
 
-
 type Counters @entity {
     id: ID!
+<<<<<<< HEAD
     count: BigInt!
+=======
+    count: Int!
+>>>>>>> 85c2cfe (remove unused entities)
 }
