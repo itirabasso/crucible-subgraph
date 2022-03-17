@@ -5,10 +5,6 @@ import {
 } from "../generated/templates/CrucibleTemplate/Crucible";
 import {
   log,
-  Address,
-  Bytes,
-  crypto,
-  ByteArray,
   BigInt,
   store,
 } from "@graphprotocol/graph-ts";

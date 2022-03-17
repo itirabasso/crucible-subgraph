@@ -4,11 +4,10 @@ type CrucibleEntity @entity {
     owner: Bytes!            
     timestamp: BigInt!
     blockNumber: BigInt!
-    index: Int
+    index: BigInt
 
     locks: [Lock!]  @derivedFrom(field: "crucible")
 
-    blockNumber: BigInt!
     txhash: Bytes!
 }
 
