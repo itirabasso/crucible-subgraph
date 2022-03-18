@@ -15,23 +15,6 @@ import {
 
 export function handleInstanceAdded(event: InstanceAdded): void {
   CrucibleTemplate.create(event.params.instance);
-
-  let crucibleAddress = event.params.instance;
-  let owner = event.address;
-  
-  let crucibleId = getCrucibleId(crucibleAddress);
-  let crucible = new CrucibleEntity(crucibleId);
-  
-  crucible.owner = owner;
-  crucible.timestamp = event.block.timestamp;
-  crucible.index = getCrucibleCounter();
-  
-  crucible.txhash = event.transaction.hash;
-  crucible.blockNumber = event.block.number;
-  
-  crucible.save();
-
-  bumpCrucibleCounter();
 }
 
 function getCrucibleCounter(): BigInt {
@@ -53,6 +36,22 @@ function bumpCrucibleCounter(): Counters {
   return counter;
 }
 
+function createCrucible(event: Transfer): void {
+
+  let to = event.params.to
+  let tokenId = event.params.tokenId
+  
+  let id = getCrucibleIdFromTokenId(tokenId);
+  let entity = new CrucibleEntity(id);
+  entity.timestamp = event.block.timestamp
+  entity.owner = to
+  entity.blockNumber = event.block.number
+  entity.index = getCrucibleCounter()
+  entity.save()
+  
+  bumpCrucibleCounter()
+}
+
 export function handleTransfer(event: Transfer): void {
   let from = event.params.from;
   let to = event.params.to;
@@ -60,6 +59,7 @@ export function handleTransfer(event: Transfer): void {
 
   // creation
   if (isAddressZero(from)) {
+    createCrucible(event)
   }
   // transfer
   if (!isAddressZero(to) && !isAddressZero(from)) {
