@@ -5,7 +5,7 @@ import {
   Transfer,
 } from "../generated/CrucibleFactory/CrucibleFactory";
 
-import { Counters, CrucibleEntity } from "../generated/schema";
+import { Counters, CrucibleEntity, Leaderboard } from "../generated/schema";
 import { CrucibleTemplate } from "../generated/templates";
 import {
   getCrucibleId,
@@ -48,6 +48,10 @@ function createCrucible(event: Transfer): void {
   entity.blockNumber = event.block.number
   entity.index = getCrucibleCounter()
   entity.save()
+
+  let leaderboard = new Leaderboard(id)
+  leaderboard.points = BigInt.fromI32(0)
+  leaderboard.save()
   
   bumpCrucibleCounter()
 }
