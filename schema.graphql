@@ -46,3 +46,22 @@ type Counters @entity {
     id: ID!
     count: BigInt!
 }
+
+
+type Reward @entity {
+    # crucibleId-token
+    id: ID!
+    token: Bytes!
+    aludel: Bytes!
+
+    amount: BigInt!
+
+    lastUpdate: BigInt!
+
+    crucible: CrucibleEntity!
+}
+
+type Leaderboard @entity {
+    id: ID!
+    points: BigInt!
+}
