@@ -6,12 +6,14 @@ import {
 } from "../generated/CrucibleFactory/CrucibleFactory";
 
 import { Counters, CrucibleEntity, Leaderboard } from "../generated/schema";
-import { CrucibleTemplate } from "../generated/templates";
+import { CrucibleTemplate, AludelV15Template } from "../generated/templates";
+// import {  } from "../generated/templates";
 import {
   getCrucibleId,
   getCrucibleIdFromTokenId,
   isAddressZero,
 } from "./utils";
+
 
 export function handleInstanceAdded(event: InstanceAdded): void {
   CrucibleTemplate.create(event.params.instance);
@@ -36,6 +38,10 @@ function bumpCrucibleCounter(): Counters {
   return counter;
 }
 
+function initAludels(): void {
+  AludelV15Template.create(Address.fromString('0x6Edb9A98DdBc1ad7Bb9AA56463318E6FE608a6b6'))
+}
+
 function createCrucible(event: Transfer): void {
 
   let to = event.params.to
@@ -49,10 +55,16 @@ function createCrucible(event: Transfer): void {
   entity.index = getCrucibleCounter()
   entity.save()
 
+
+  
+  if (entity.index == BigInt.fromI32(0)) {
+    initAludels()
+  }
+
   let leaderboard = new Leaderboard(id)
   leaderboard.points = BigInt.fromI32(0)
   leaderboard.save()
-  
+
   bumpCrucibleCounter()
 }
 
