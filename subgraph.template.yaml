@@ -29,6 +29,27 @@ dataSources:
           handler: handleTransfer
       file: ./src/factory.ts
 
+  - kind: ethereum/contract
+    name: Minter
+    network: {{network}}
+    source:
+      address: "{{Minter}}"
+      abi: Minter
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - CrucibleEntity
+      abis:
+        - name: Minter
+          file: ./abis/Minter.json
+      callHandlers:
+        - function: payFee(address)
+          handler: handleFeePayment
+      file: ./src/minter.ts
+
 templates:
   - kind: ethereum/contract
     name: CrucibleTemplate
