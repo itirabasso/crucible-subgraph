@@ -1,76 +1,49 @@
 
-import { Address, BigInt, ByteArray, dataSource, log, TypedMap } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ByteArray, dataSource, json, JSONValue, log, TypedMap } from "@graphprotocol/graph-ts";
+import { AludelFunded__Params } from "../generated/templates/AludelV15Template/AludelV15";
+import { formatAddress } from "./utils";
 
 const NETWORK_NAME = dataSource.network()
 
-// const levelsConfig = {
+// TODO : upload this to ipfs
+// let levelsConfig: {
 //     mainnet: {
-//         basic: [Address.fromString('0x54e0395CFB4f39beF66DBCd5bD93Cca4E9273D56')],
-//         pro: [Address.fromString('0x075d940Fa6878c6164f3F44CFc584923c4F5654C')],
-//         platinum: [Address.fromString('0xB772ce9f14FC7C7db0D4525aDb9349FBD7ce456a')]
+//         basic: {
+//             crucibleFactory: '0x54e0395CFB4f39beF66DBCd5bD93Cca4E9273D56'
+//         },
+//         pro: {
+//             minter: '0x075d940Fa6878c6164f3F44CFc584923c4F5654C'
+//         },
+//         platinum: {
+//             transmuter: '0xB772ce9f14FC7C7db0D4525aDb9349FBD7ce456a'
+//         }
 //     },
 //     rinkeby: {
-//         basic: [Address.fromString('0xf92D86483438BDe1d68e501ce15470155DeE08B3')],
-//         pro: [Address.fromString('0x45522b727d50258780c3DE972b299D1CD69b20d4')],
-//         platinum: [Address.fromString('0x0ADc14De42436aD95747a1C9A8002D4E60888ACa')]
+//         basic: {
+//             crucibleFactory: '0xf92D86483438BDe1d68e501ce15470155DeE08B3'
+//         },
+//         pro: {
+//             minter: '0x45522b727d50258780c3DE972b299D1CD69b20d4'
+//         },
+//         platinum: {
+//             transmuter:'0x0ADc14De42436aD95747a1C9A8002D4E60888ACa'
+//         }
 //     },
-// }
-
-const levelsConfig = {
-    mainnet: {
-        basic: {
-            crucibleFactory: '0x54e0395CFB4f39beF66DBCd5bD93Cca4E9273D56'
-        },
-        pro: {
-            minter: '0x075d940Fa6878c6164f3F44CFc584923c4F5654C'
-        },
-        platinum: {
-            transmuter: '0xB772ce9f14FC7C7db0D4525aDb9349FBD7ce456a'
-        }
-    },
-    rinkeby: {
-        basic: {
-            crucibleFactory: '0xf92D86483438BDe1d68e501ce15470155DeE08B3'
-        },
-        pro: {
-            minter: '0x45522b727d50258780c3DE972b299D1CD69b20d4'
-        },
-        platinum: {
-            transmuter:'0x0ADc14De42436aD95747a1C9A8002D4E60888ACa'
-        }
-    },
-}
-
-
-// function getLevels(): TypedMap<string, string> {
-//     let levels = new TypedMap<string, string>()
-
-//     let config = Object.entries(levelsConfig).find(([key, value]) => key == NETWORK_NAME) [0]
-//     Object.entries(levelsConfig).forEach(([key, value]) => )
-//     Object.entries(config).forEach(([address, level]) => {
-//         levels.set(address, level)
-//     })
 // }
 
 const LEVELS = new TypedMap<string, TypedMap<string, string> >()
 
 const mainnetLevels = new TypedMap<string, string>()
-// mainnetLevels.set('basic', '0x54e0395CFB4f39beF66DBCd5bD93Cca4E9273D56')
-// mainnetLevels.set('pro', '0x075d940Fa6878c6164f3F44CFc584923c4F5654C')
-// mainnetLevels.set('platinum', '0xB772ce9f14FC7C7db0D4525aDb9349FBD7ce456a')
-mainnetLevels.set(levelsConfig.mainnet.basic.crucibleFactory.toLowerCase(), 'Basic')
-mainnetLevels.set(levelsConfig.mainnet.pro.minter.toLowerCase(), 'Pro')
-mainnetLevels.set(levelsConfig.mainnet.platinum.transmuter.toLowerCase(), 'Platinum')
+mainnetLevels.set("0x54e0395CFB4f39beF66DBCd5bD93Cca4E9273D56".toLowerCase(), 'Basic')
+mainnetLevels.set("0x075d940Fa6878c6164f3F44CFc584923c4F5654C".toLowerCase(), 'Pro')
+mainnetLevels.set("0xB772ce9f14FC7C7db0D4525aDb9349FBD7ce456a".toLowerCase(), 'Platinum')
 
 LEVELS.set('mainnet', mainnetLevels)
 
 const rinkebyLevels = new TypedMap<string, string>()
-// rinkebyLevels.set('basic', '0xf92D86483438BDe1d68e501ce15470155DeE08B3')
-// rinkebyLevels.set('pro', '0x45522b727d50258780c3DE972b299D1CD69b20d4')
-// rinkebyLevels.set('platinum', '0x0ADc14De42436aD95747a1C9A8002D4E60888ACa')
-rinkebyLevels.set(levelsConfig.mainnet.basic.crucibleFactory.toLowerCase(), 'Basic')
-rinkebyLevels.set(levelsConfig.mainnet.pro.minter.toLowerCase(), 'Pro')
-rinkebyLevels.set(levelsConfig.mainnet.platinum.transmuter.toLowerCase(), 'Platinum')
+rinkebyLevels.set("0xf92D86483438BDe1d68e501ce15470155DeE08B3".toLowerCase(), 'Basic')
+rinkebyLevels.set("0x45522b727d50258780c3DE972b299D1CD69b20d4".toLowerCase(), 'Pro')
+rinkebyLevels.set("0x0ADc14De42436aD95747a1C9A8002D4E60888ACa".toLowerCase(), 'Platinum')
 
 LEVELS.set('rinkeby', rinkebyLevels)
 
@@ -81,7 +54,7 @@ export function getLevel(address: Address): string {
     
     if (levels != null) {
         // if (address == null) return'unknown'
-        let level = levels.get(address.toHexString().toLowerCase())
+        let level = levels.get(formatAddress(address))
         if (level === null) {
             log.warning('crucible created with unknown contract: {}', [address.toHexString()])
             return 'Unknown'
@@ -92,4 +65,29 @@ export function getLevel(address: Address): string {
         log.error('invalid level', [])
         return 'Unknown'
     }
+}
+
+const ALUDELS = new TypedMap<string, Address[]>()
+
+ALUDELS.set(
+    'mainnet',
+    [
+        Address.fromString('0x93c31fc68E613f9A89114f10B38F9fd2EA5de6BC')
+    ]
+)
+ALUDELS.set(
+    'rinkeby',
+    [
+        Address.fromString('0x6Edb9A98DdBc1ad7Bb9AA56463318E6FE608a6b6')
+    ]
+)
+
+export function getAludels(): Address[] {
+    let aludels = ALUDELS.get(NETWORK_NAME)
+    if (aludels == null) {
+        log.error('unable to retrieve aludels', [])
+        return []
+    }
+
+    return aludels
 }

@@ -1,5 +1,6 @@
 {
     "CrucibleFactory": "0x54e0395CFB4f39beF66DBCd5bD93Cca4E9273D56",
+    "Minter": "0x075d940Fa6878c6164f3F44CFc584923c4F5654C",
     "startBlock": 11880064,
     "network": "mainnet"
 }
