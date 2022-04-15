@@ -1,6 +1,9 @@
 import { BigInt, log, store, Value } from "@graphprotocol/graph-ts";
 
-import { RewardClaimed } from "../generated/AludelV15/Aludel";
+import {
+  RewardClaimed
+} from "../generated/templates/AludelV15Template/AludelV15";
+
 import { CrucibleEntity, Leaderboard, Reward } from "../generated/schema";
 import { getCrucibleId, getRewardId } from "./utils";
 
