@@ -7,7 +7,7 @@ import {
 
 import { Counters, CrucibleEntity, Leaderboard } from "../generated/schema";
 import { CrucibleTemplate, AludelV15Template } from "../generated/templates";
-// import {  } from "../generated/templates";
+import { getAludels, getLevel } from "./config";
 import {
   getCrucibleId,
   getCrucibleIdFromTokenId,
@@ -39,20 +39,28 @@ function bumpCrucibleCounter(): Counters {
 }
 
 function initAludels(): void {
-  AludelV15Template.create(Address.fromString('0x6Edb9A98DdBc1ad7Bb9AA56463318E6FE608a6b6'))
+  let aludels = getAludels()
+  for (let index = 0; index < aludels.length; index++) {
+    // const aludel = aludels[index];
+    AludelV15Template.create(aludels[index])
+  }
 }
 
 function createCrucible(event: Transfer): void {
-
-  let to = event.params.to
+  let to = event.transaction.to
+  let owner = event.params.to
   let tokenId = event.params.tokenId
+  
   
   let id = getCrucibleIdFromTokenId(tokenId);
   let entity = new CrucibleEntity(id);
   entity.timestamp = event.block.timestamp
-  entity.owner = to
+  entity.owner = owner
   entity.blockNumber = event.block.number
   entity.index = getCrucibleCounter()
+  if (to !== null) {
+    entity.level = getLevel(to)
+  }
   entity.save()
 
 

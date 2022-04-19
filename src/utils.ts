@@ -39,12 +39,16 @@ export function getUnstakeId(lock: Lock, index: BigInt): string {
   return lock.id + "-unstake-" + index.toString();
 }
 
+export function formatAddress(address: Address): string {
+  return padAddress(address.toHexString().toLowerCase());
+}
+
 export function padAddress(address: string): string {
   return '0x' + address.slice(2).padStart(40, '0');
 }
 
 export function getCrucibleId(address: Address): string {
-  return padAddress(address.toHexString().toLowerCase());
+  return formatAddress(address)
 }
 
 export function getCrucibleIdFromTokenId(tokenId: BigInt): string {

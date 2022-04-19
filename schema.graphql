@@ -8,6 +8,8 @@ type CrucibleEntity @entity {
 
     locks: [Lock!]  @derivedFrom(field: "crucible")
 
+    level: CrucibleLevel
+
     txhash: Bytes!
 }
 
@@ -64,4 +66,11 @@ type Reward @entity {
 type Leaderboard @entity {
     id: ID!
     points: BigInt!
+}
+
+enum CrucibleLevel {
+    Basic
+    Pro
+    Platinum
+    Unknown
 }
