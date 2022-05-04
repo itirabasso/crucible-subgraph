@@ -1,15 +1,11 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import {
   InstanceAdded,
-  InstanceRemoved,
   Transfer,
 } from "../generated/CrucibleFactory/CrucibleFactory";
-
 import { Counters, CrucibleEntity, Leaderboard } from "../generated/schema";
 import { CrucibleTemplate, AludelV15Template } from "../generated/templates";
-// import {  } from "../generated/templates";
 import {
-  getCrucibleId,
   getCrucibleIdFromTokenId,
   isAddressZero,
 } from "./utils";
@@ -53,10 +49,9 @@ function createCrucible(event: Transfer): void {
   entity.owner = to
   entity.blockNumber = event.block.number
   entity.index = getCrucibleCounter()
+  entity.rewardsLength = BigInt.fromI32(0)
   entity.save()
 
-
-  
   if (entity.index == BigInt.fromI32(0)) {
     initAludels()
   }
