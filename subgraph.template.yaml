@@ -22,6 +22,8 @@ dataSources:
           file: ./abis/CrucibleFactory.json
         - name: Crucible
           file: ./abis/Crucible.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: InstanceAdded(address)
           handler: handleInstanceAdded
@@ -71,6 +73,8 @@ templates:
       abis:
         - name: AludelV15
           file: ./abis/AludelV15.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: RewardClaimed(address,address,uint256)
           handler: handleRewardClaimed
