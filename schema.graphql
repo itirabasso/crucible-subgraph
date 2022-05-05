@@ -18,7 +18,7 @@ type Lock @entity {
     # id = crucibleId-lockID
     id: ID!
     delegate: Bytes!
-    token: Bytes!
+    token: ERC20Token!
     balance: BigInt!
 
     stakesLength: BigInt!
