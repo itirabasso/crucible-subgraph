@@ -70,6 +70,7 @@ templates:
       file: ./src/aludelv1.5.ts
       entities:
         - Aludel
+        - ERC020Token
       abis:
         - name: AludelV15
           file: ./abis/AludelV15.json
