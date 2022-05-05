@@ -57,8 +57,6 @@ type Reward @entity {
     token: ERC20Token!
     aludel: Bytes!
 
-    tokenDecimals: BigInt!
-
     amount: BigInt!
 
     lastUpdate: BigInt!
