@@ -72,7 +72,7 @@ export function handleRewardClaimed(event: RewardClaimed): void {
   if (reward == null) {
     reward = new Reward(rewardId)
     reward.amount = amount
-    reward.token = tokenAddress.toString()
+    reward.token = tokenAddress.toHexString()
     reward.aludel = aludel
     reward.crucible = crucible.id
     // log.warning('newReward: {}', [rewardId])
