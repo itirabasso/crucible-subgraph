@@ -83,3 +83,7 @@ templates:
       eventHandlers:
         - event: RewardClaimed(address,address,uint256)
           handler: handleRewardClaimed
+        - event: RewardClaimed(address,address,address,uint256)
+          handler: handleRewardClaimedLegacy
+
+
