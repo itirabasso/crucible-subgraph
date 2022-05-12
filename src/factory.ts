@@ -3,9 +3,11 @@ import {
   InstanceAdded,
   Transfer,
 } from "../generated/CrucibleFactory/CrucibleFactory";
-import { Counters, CrucibleEntity, Leaderboard } from "../generated/schema";
+import { Counters, CrucibleEntity, Leaderboard, RewardProgram } from "../generated/schema";
 import { CrucibleTemplate, AludelV15Template } from "../generated/templates";
+import { getAludels } from "./config";
 import {
+  getAludelId,
   getCrucibleIdFromTokenId,
   isAddressZero,
 } from "./utils";
@@ -35,7 +37,17 @@ function bumpCrucibleCounter(): Counters {
 }
 
 function initAludels(): void {
-  AludelV15Template.create(Address.fromString('0x6Edb9A98DdBc1ad7Bb9AA56463318E6FE608a6b6'))
+  let aludels = getAludels()
+
+  aludels.forEach((value, index) => {
+    let aludelAddress = Address.fromString(value)
+    AludelV15Template.create(Address.fromString(value))
+    let aludelId = getAludelId(aludelAddress)
+
+    // reviewme: maybe we should create the entity when the program is deployed?
+    let rewardProgram = new RewardProgram(aludelId)
+    rewardProgram.save()
+  })
 }
 
 function createCrucible(event: Transfer): void {
