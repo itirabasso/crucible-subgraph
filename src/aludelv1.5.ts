@@ -14,8 +14,9 @@ import {
   ERC20Token,
   Leaderboard,
   Reward,
+  RewardProgram,
 } from "../generated/schema";
-import { getCrucibleId, getRewardId, getTokenId } from "./utils";
+import { getAludelId, getCrucibleId, getRewardId, getTokenId } from "./utils";
 import { createERC20Token } from "./erc20Token";
 
 export function _handleRewardClaimed(
@@ -30,6 +31,13 @@ export function _handleRewardClaimed(
   let crucible = CrucibleEntity.load(crucibleId);
   if (crucible == null) {
     log.error("rewardClaimed: crucible {} not found", [crucibleId]);
+    return;
+  }
+
+  let aludelId = getAludelId(aludel)
+  let rewardProgram = RewardProgram.load(aludelId)
+  if (rewardProgram == null) {
+    log.error("rewardClaimed: reward program {} not found", [aludelId]);
     return;
   }
   // log.warning("rewardClaimed: crucible {} loaded", [crucibleId])
@@ -48,6 +56,7 @@ export function _handleRewardClaimed(
     reward.token = tokenId;
     reward.aludel = aludel;
     reward.crucible = crucible.id;
+    reward.rewardProgram = rewardProgram.id
     // log.warning('newReward: {}', [rewardId])
     crucible.rewardsLength = crucible.rewardsLength.plus(BigInt.fromI32(1));
   } else {
