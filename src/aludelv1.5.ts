@@ -56,7 +56,7 @@ export function _handleRewardClaimed(
     reward.token = tokenId;
     reward.aludel = aludel;
     reward.crucible = crucible.id;
-    reward.rewardProgram = rewardProgram.id
+    reward.rewardProgram = aludelId
     // log.warning('newReward: {}', [rewardId])
     crucible.rewardsLength = crucible.rewardsLength.plus(BigInt.fromI32(1));
   } else {
