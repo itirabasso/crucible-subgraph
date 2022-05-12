@@ -7,7 +7,7 @@ import {
   Value,
 } from "@graphprotocol/graph-ts";
 
-import { RewardClaimed } from "../generated/templates/AludelV15Template/AludelV15";
+import { RewardClaimed, RewardClaimed1 as RewardClaimedLegacy } from "../generated/templates/AludelV15Template/AludelV15";
 
 import {
   CrucibleEntity,
@@ -79,7 +79,7 @@ export function handleRewardClaimed(event: RewardClaimed): void {
   _handleRewardClaimed(event, aludel, tokenAddress, amount, crucibleAddress);
 }
 
-export function handleRewardClaimedLegacy(event: RewardClaimed): void {
+export function handleRewardClaimedLegacy(event: RewardClaimedLegacy): void {
   let aludel = event.address;
   let tokenAddress = event.params.token;
   let amount = event.params.amount;
