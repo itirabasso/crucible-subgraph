@@ -50,12 +50,20 @@ type Counters @entity {
     count: BigInt!
 }
 
+type RewardProgram @entity {
+    # contract address
+    id: ID!
+
+    rewards: [Reward!]! @derivedFrom(field: "rewardProgram")
+}
 
 type Reward @entity {
     # crucibleId-token
     id: ID!
     token: ERC20Token!
+
     aludel: Bytes!
+    rewardProgram: RewardProgram!
 
     amount: BigInt!
 
