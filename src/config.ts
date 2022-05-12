@@ -38,7 +38,7 @@ ALUDELS.set(
 )
 
 ALUDELS.set(
-    'polygon',
+    'matic',
     [
         "0xeE58832B0a4fd753d6E6184C6bfe3E69019E64Ee",
         "0xFF7C0970dBc4b1fbdE29D814EbE1b5c5F3b11142"    
