@@ -45,6 +45,13 @@ ALUDELS.set(
     ]
 )
 
+ALUDELS.set(
+    'avalanche',
+    [
+        '0x26645e8513b1d20adb729e7114edfa930d411720'
+    ]
+)
+
 export function getAludels(): string[] {
     let aludels = ALUDELS.get(NETWORK_NAME)
     if (aludels == null) {
