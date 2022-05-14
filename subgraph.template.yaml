@@ -30,7 +30,36 @@ dataSources:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/factory.ts
-
+{{#UniversalVaultFactory}}
+  - kind: ethereum/contract
+    name: VaultFactory
+    network: {{network}}
+    source:
+      address: "{{UniversalVaultFactory}}"
+      abi: CrucibleFactory
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - CrucibleEntity
+        - InstanceAdded
+        - Transfer
+      abis:
+        - name: CrucibleFactory
+          file: ./abis/CrucibleFactory.json
+        - name: Crucible
+          file: ./abis/Crucible.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: InstanceAdded(address)
+          handler: handleInstanceAdded
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/factory.ts
+{{/UniversalVaultFactory}}
 templates:
   - kind: ethereum/contract
     name: CrucibleTemplate
@@ -85,5 +114,3 @@ templates:
           handler: handleRewardClaimed
         - event: RewardClaimed(address,address,address,uint256)
           handler: handleRewardClaimedLegacy
-
-
