@@ -1,5 +1,6 @@
 {
     "CrucibleFactory": "0x54e0395CFB4f39beF66DBCd5bD93Cca4E9273D56",
+    "UniversalVaultFactory": "0x8A09fFA4d4310c7F59DC538a1481D8Ba2214Cef0",
     "startBlock": 11880064,
     "network": "mainnet"
 }
