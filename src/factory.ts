@@ -5,6 +5,7 @@ import {
 } from "../generated/CrucibleFactory/CrucibleFactory";
 import { Counters, CrucibleEntity, Leaderboard, RewardProgram } from "../generated/schema";
 import { CrucibleTemplate, AludelV15Template } from "../generated/templates";
+import { VaultFactoryRegistered } from "../generated/templates/AludelV15Template/AludelV15";
 import { getAludels } from "./config";
 import {
   getAludelId,
@@ -62,6 +63,7 @@ function createCrucible(event: Transfer): void {
   entity.blockNumber = event.block.number
   entity.index = getCrucibleCounter()
   entity.rewardsLength = BigInt.fromI32(0)
+  entity.factory = event.address
   entity.save()
 
   if (entity.index == BigInt.fromI32(0)) {

@@ -12,6 +12,8 @@ type CrucibleEntity @entity {
     rewards: [Reward!] @derivedFrom(field: "crucible")
 
     txhash: Bytes!
+
+    factory: Bytes!
 }
 
 type Lock @entity {
