@@ -114,6 +114,8 @@ templates:
           handler: handleGeyserCreation
         - event: AludelCreated(address,address)
           handler: handleAludelCreation
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
         - event: RewardClaimed(address,address,uint256)
           handler: handleRewardClaimed
         - event: RewardClaimed(address,address,address,uint256)
