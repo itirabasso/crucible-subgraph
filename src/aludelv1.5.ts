@@ -7,7 +7,7 @@ import {
   Value,
 } from "@graphprotocol/graph-ts";
 
-import { AludelCreated, AludelV15, GeyserCreated, RewardClaimed, RewardClaimed1 as RewardClaimedLegacy } from "../generated/templates/AludelV15Template/AludelV15";
+import { AludelCreated, AludelV15, GeyserCreated, OwnershipTransferred, RewardClaimed, RewardClaimed1 as RewardClaimedLegacy } from "../generated/templates/AludelV15Template/AludelV15";
 
 import {
   CrucibleEntity,
@@ -44,6 +44,18 @@ function _handleCreation(aludelAddress: Address): void {
     aludel.owner = owner.value
   }
 
+  aludel.save()
+}
+
+export function handleOwnershipTransferred(event: OwnershipTransferred): void {
+  let aludelId = getAludelId(event.address)
+  let aludel = RewardProgram.load(aludelId)
+  if (aludel == null) {
+    log.error('unable to load aludel {}', [aludelId])
+    return;
+  }
+
+  aludel.owner = event.params.newOwner
   aludel.save()
 }
 
