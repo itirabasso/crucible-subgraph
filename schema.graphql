@@ -55,6 +55,8 @@ type Counters @entity {
 type RewardProgram @entity {
     # contract address
     id: ID!
+    
+    owner: Bytes
 
     rewards: [Reward!]! @derivedFrom(field: "rewardProgram")
 }
@@ -86,4 +88,8 @@ type ERC20Token @entity {
     symbol: String!
     name: String!
     decimals: BigInt!
+}
+
+type Config @entity {
+    id: ID!
 }
