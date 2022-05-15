@@ -6,7 +6,7 @@ import {
 import { Counters, CrucibleEntity, Leaderboard, RewardProgram } from "../generated/schema";
 import { CrucibleTemplate, AludelV15Template } from "../generated/templates";
 import { VaultFactoryRegistered } from "../generated/templates/AludelV15Template/AludelV15";
-import { getAludels } from "./config";
+import { getAludels, getCrucibleFactoryAddress} from "./config";
 import {
   getAludelId,
   getCrucibleIdFromTokenId,
@@ -61,20 +61,24 @@ function createCrucible(event: Transfer): void {
   entity.timestamp = event.block.timestamp
   entity.owner = to
   entity.blockNumber = event.block.number
-  entity.index = getCrucibleCounter()
-  entity.rewardsLength = BigInt.fromI32(0)
   entity.factory = event.address
-  entity.save()
 
-  if (entity.index == BigInt.fromI32(0)) {
-    initAludels()
+  if(getCrucibleFactoryAddress() == entity.factory) {
+    entity.index = getCrucibleCounter()
+    bumpCrucibleCounter()
+
+    // fixme: this shouldn't be here.
+    if (entity.index == BigInt.fromI32(0)) {
+      initAludels()
+    }
   }
+  entity.rewardsLength = BigInt.fromI32(0)
+  entity.save()
 
   let leaderboard = new Leaderboard(id)
   leaderboard.points = BigInt.fromI32(0)
   leaderboard.save()
 
-  bumpCrucibleCounter()
 }
 
 export function handleTransfer(event: Transfer): void {
