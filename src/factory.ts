@@ -3,7 +3,7 @@ import {
   InstanceAdded,
   Transfer,
 } from "../generated/CrucibleFactory/CrucibleFactory";
-import { Counters, CrucibleEntity, Leaderboard, RewardProgram } from "../generated/schema";
+import { Config, Counters, CrucibleEntity, Leaderboard, RewardProgram } from "../generated/schema";
 import { CrucibleTemplate, AludelV15Template } from "../generated/templates";
 import { VaultFactoryRegistered } from "../generated/templates/AludelV15Template/AludelV15";
 import { getAludels, getCrucibleFactoryAddress} from "./config";
@@ -63,14 +63,20 @@ function createCrucible(event: Transfer): void {
   entity.blockNumber = event.block.number
   entity.factory = event.address
 
+  // hack: if there isn't a config entity with id 'aludel' we initialize the aludels.
+  let config = Config.load('aludel')
+  if (config == null) {
+    initAludels()
+    // create the config with id 'aludel'
+    config = new Config('aludel')
+    config.save()
+  } else {
+    // aludels already initialized, no need to do anything
+  }
+
   if(getCrucibleFactoryAddress() == entity.factory) {
     entity.index = getCrucibleCounter()
     bumpCrucibleCounter()
-
-    // fixme: this shouldn't be here.
-    if (entity.index == BigInt.fromI32(0)) {
-      initAludels()
-    }
   }
   entity.rewardsLength = BigInt.fromI32(0)
   entity.save()
