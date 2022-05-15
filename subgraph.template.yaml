@@ -110,6 +110,10 @@ templates:
         - name: ERC20
           file: ./abis/ERC20.json
       eventHandlers:
+        - event: GeyserCreated(address,address)
+          handler: handleGeyserCreation
+        - event: AludelCreated(address,address)
+          handler: handleAludelCreation
         - event: RewardClaimed(address,address,uint256)
           handler: handleRewardClaimed
         - event: RewardClaimed(address,address,address,uint256)
