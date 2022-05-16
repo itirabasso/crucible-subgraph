@@ -60,6 +60,31 @@ dataSources:
           handler: handleTransfer
       file: ./src/factory.ts
 {{/UniversalVaultFactory}}
+{{#AludelFactory}}
+  - kind: ethereum/contract
+    name: AludelFactory
+    network: {{network}}
+    source:
+      address: "{{AludelFactory}}"
+      abi: AludelFactory
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - AludelFactory
+      abis:
+        - name: AludelFactory
+          file: ./abis/AludelFactory.json
+        - name: AludelV15
+          file: ./abis/AludelV15.json
+      eventHandlers:
+        - event: AludelSpawned(address)
+          handler: handleAludelSpawned
+      file: ./src/aludelv1.5.ts
+{{/AludelFactory}}
+
 templates:
   - kind: ethereum/contract
     name: CrucibleTemplate
