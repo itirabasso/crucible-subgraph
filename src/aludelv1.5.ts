@@ -18,6 +18,8 @@ import {
 } from "../generated/schema";
 import { getAludelId, getCrucibleId, getRewardId, getTokenId } from "./utils";
 import { createERC20Token } from "./erc20Token";
+import { AludelSpawned } from "../generated/AludelFactory/AludelFactory";
+import { AludelV15Template } from "../generated/templates";
 
 export function handleGeyserCreation(event: GeyserCreated): void {
   _handleCreation(event.address)
@@ -137,4 +139,10 @@ export function handleRewardClaimedLegacy(event: RewardClaimedLegacy): void {
   // log.warning("prereward: {} {} {} {}", [crucibleAddress.toHex(), aludel.toHex(), token.toHex(), amount.toString()])
 
   _handleRewardClaimed(event, aludel, tokenAddress, amount, crucibleAddress);
+}
+
+export function handleAludelSpawned(event: AludelSpawned): void {
+  let aludelAddress = event.params.aludel
+  AludelV15Template.create(aludelAddress)
+  _handleCreation(aludelAddress)
 }
