@@ -80,9 +80,12 @@ dataSources:
         - name: AludelV15
           file: ./abis/AludelV15.json
       eventHandlers:
-        - event: AludelSpawned(address)
-          handler: handleAludelSpawned
-      file: ./src/aludelv1.5.ts
+        - event: InstanceAdded(address)
+          handler: handleInstsanceAdded
+        - event: InstanceRemoved(address)
+          handler: handleRemoved
+          
+      file: ./src/aludelFactory.ts
 {{/AludelFactory}}
 
 templates:
