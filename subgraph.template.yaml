@@ -81,7 +81,7 @@ dataSources:
           file: ./abis/AludelV15.json
       eventHandlers:
         - event: InstanceAdded(address)
-          handler: handleInstsanceAdded
+          handler: handleInstanceAdded
         - event: InstanceRemoved(address)
           handler: handleRemoved
           
