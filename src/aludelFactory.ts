@@ -1,9 +1,9 @@
 import { dataSource, log, store } from "@graphprotocol/graph-ts";
-import { AludelFactory, InstanceAdded, InstanceRemoved } from "../generated/AludelFactory/AludelFactory";
-import { RewardProgram } from "../generated/schema";
+import { AludelFactory, InstanceAdded, InstanceRemoved, TemplateAdded, TemplateUpdated } from "../generated/AludelFactory/AludelFactory";
+import { RewardProgram, Template } from "../generated/schema";
 import { AludelV15Template } from "../generated/templates";
 import { AludelV15 } from "../generated/templates/AludelV15Template/AludelV15";
-import { getAludelId } from "./utils";
+import { getAludelId, getIdFromAddress } from "./utils";
 
 export function handleInstanceAdded(event: InstanceAdded): void {
   let aludelAddress = event.params.instance
@@ -42,3 +42,20 @@ export function handleInstanceAdded(event: InstanceAdded): void {
   let aludelId = getAludelId(aludelAddress)
   store.remove('RewardProgram', aludelId)
  }
+
+export function handleTemplateAdded(event: TemplateAdded): void {
+  let id = getIdFromAddress(event.params.template)
+  let template = new Template(id)
+  template.disabled = false
+  template.save()
+}
+export function handleTemplateUpdated(event: TemplateUpdated): void {
+  let id = getIdFromAddress(event.params.template);
+  let template = Template.load(id)
+  if (template === null) {
+    log.error('handleTemplateUpdate: cannot load template with id', [id])
+    return;
+  }
+  template.disabled = event.params.disabled
+  template.save()
+}
