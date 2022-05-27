@@ -84,6 +84,10 @@ dataSources:
           handler: handleInstanceAdded
         - event: InstanceRemoved(address)
           handler: handleRemoved
+        - event: TemplateAdded(address)
+          handler: handleTemplateAdded
+        - event: TemplateUpdated(address,bool)
+          handler: handleTemplateUpdated
           
       file: ./src/aludelFactory.ts
 {{/AludelFactory}}
