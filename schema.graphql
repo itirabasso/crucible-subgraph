@@ -67,6 +67,12 @@ type RewardProgram @entity {
     rewards: [Reward!]! @derivedFrom(field: "rewardProgram")
 }
 
+type Template @entity {
+    # contract address
+    id: ID!
+    disabled: Boolean
+}
+
 type Reward @entity {
     # crucibleId-token
     id: ID!
