@@ -58,7 +58,6 @@ type RewardProgram @entity {
     
     owner: Bytes
 
-    url: String
     template: Bytes
     name: String
     creation: BigInt
