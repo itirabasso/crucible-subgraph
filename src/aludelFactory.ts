@@ -29,7 +29,6 @@ export function handleInstanceAdded(event: InstanceAdded): void {
   }
 
   rewardProgram.template = data.value.template
-  rewardProgram.url = data.value.url
   rewardProgram.stakingTokenUrl = data.value.stakingTokenUrl
   rewardProgram.creation = data.value.creation
   rewardProgram.name = data.value.name
