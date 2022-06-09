@@ -8,7 +8,7 @@ import {
   BigInt,
   store,
 } from "@graphprotocol/graph-ts";
-import { CrucibleEntity, Lock, Stake, Unstake } from "../generated/schema";
+import { CrucibleEntity, Leaderboard, Lock, Stake, Unstake } from "../generated/schema";
 import {getCrucibleId, getLockId, getStakeId, getUnstakeId} from "./utils";
 
 export function handleLocked(event: Locked): void {
@@ -53,8 +53,16 @@ export function handleLocked(event: Locked): void {
   stake.amount = event.params.amount;
   stake.timestamp = event.block.timestamp;
   stake.lock = id;
+
   stake.save();
 
+  let leaderboard = Leaderboard.load(crucibleId)
+  if (leaderboard == null) {
+    log.error("rewardClaimed: failed to load leaderboard {}", [crucibleId]);
+    return
+  }
+  leaderboard.points = leaderboard.points.plus(stake.amount)
+  leaderboard.save()
 }
 
 export function handleUnlocked(event: Unlocked): void {
@@ -129,9 +137,18 @@ export function handleUnlocked(event: Unlocked): void {
   lock.unstakesLength = unstakesLength
   lock.stakesLength = stakesLength
   lock.balance = lock.balance.minus(event.params.amount);
-
+  
   // should we remove the lock when balance reaches 0?
   lock.save();
+
+  let leaderboard = Leaderboard.load(crucibleId)
+  if (leaderboard == null) {
+    log.error("rewardClaimed: failed to load leaderboard {}", [crucibleId]);
+    return
+  }
+  leaderboard.points = leaderboard.points.minus(event.params.amount)
+  leaderboard.save()
+
 }
 
 export function handleRageQuit(event: RageQuit): void {

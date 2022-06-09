@@ -55,3 +55,22 @@ templates:
         # event RageQuit(address delegate, address token, bool notified, string reason);
         - event: RageQuit(address,address,bool,string)
           handler: handleRageQuit
+
+  - kind: ethereum/contract
+    name: AludelV15Template
+    network: {{network}}
+    source:
+      abi: AludelV15
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/aludelv1.5.ts
+      entities:
+        - Aludel
+      abis:
+        - name: AludelV15
+          file: ./abis/AludelV15.json
+      eventHandlers:
+        - event: RewardClaimed(address,address,uint256)
+          handler: handleRewardClaimed
