@@ -1,5 +1,6 @@
 {
     "CrucibleFactory": "0x6D07709A30fcE07901B2a6D8e1D6E6ac17eb96De",
-    "startBlock": 11939644,
+    "UniversalVaultFactory": "0xceD5A1061F5507172059FE760CA2e9F050caBF02",
+    "startBlock": 8279855,
     "network": "avalanche"
 }

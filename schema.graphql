@@ -8,14 +8,19 @@ type CrucibleEntity @entity {
 
     locks: [Lock!]  @derivedFrom(field: "crucible")
 
+    rewardsLength: BigInt!
+    rewards: [Reward!] @derivedFrom(field: "crucible")
+
     txhash: Bytes!
+
+    factory: Bytes!
 }
 
 type Lock @entity {
     # id = crucibleId-lockID
     id: ID!
     delegate: Bytes!
-    token: Bytes!
+    token: ERC20Token!
     balance: BigInt!
 
     stakesLength: BigInt!
@@ -47,12 +52,20 @@ type Counters @entity {
     count: BigInt!
 }
 
+type RewardProgram @entity {
+    # contract address
+    id: ID!
+
+    rewards: [Reward!]! @derivedFrom(field: "rewardProgram")
+}
 
 type Reward @entity {
     # crucibleId-token
     id: ID!
-    token: Bytes!
+    token: ERC20Token!
+
     aludel: Bytes!
+    rewardProgram: RewardProgram!
 
     amount: BigInt!
 
@@ -64,4 +77,13 @@ type Reward @entity {
 type Leaderboard @entity {
     id: ID!
     points: BigInt!
+}
+
+type ERC20Token @entity {
+    id: ID!
+
+    address: Bytes!
+    symbol: String!
+    name: String!
+    decimals: BigInt!
 }

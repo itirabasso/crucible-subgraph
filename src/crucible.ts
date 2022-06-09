@@ -8,17 +8,23 @@ import {
   BigInt,
   store,
 } from "@graphprotocol/graph-ts";
-import { CrucibleEntity, Leaderboard, Lock, Stake, Unstake } from "../generated/schema";
-import {getCrucibleId, getLockId, getStakeId, getUnstakeId} from "./utils";
+import { CrucibleEntity, ERC20Token, Leaderboard, Lock, Stake, Unstake } from "../generated/schema";
+import {getCrucibleId, getLockId, getStakeId, getTokenId, getUnstakeId} from "./utils";
+import { createERC20Token } from "./erc20Token";
 
 export function handleLocked(event: Locked): void {
   let crucibleId = getCrucibleId(event.address);
   let crucible = CrucibleEntity.load(crucibleId);
 
   let delegate = event.params.delegate;
-  let token = event.params.token;
+  let tokenAddress = event.params.token;
 
-  let id = getLockId(crucibleId, delegate, token)
+  let erc20Token = ERC20Token.load(getTokenId(tokenAddress))
+  if (erc20Token == null) {
+    erc20Token = createERC20Token(tokenAddress)
+  }
+
+  let id = getLockId(crucibleId, delegate, tokenAddress)
   // if crucible exists and id is not null
   if (crucible == null) {
     log.warning("crucible {} not found", [crucibleId]);
@@ -30,7 +36,7 @@ export function handleLocked(event: Locked): void {
   if (lock == null) {
     lock = new Lock(id);
     lock.delegate = delegate;
-    lock.token = token;
+    lock.token = getTokenId(tokenAddress)
     lock.balance = BigInt.zero();
     lock.crucible = crucible.id;
     lock.stakesLength = BigInt.fromI32(0);

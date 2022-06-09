@@ -47,6 +47,10 @@ export function getCrucibleId(address: Address): string {
   return padAddress(address.toHexString().toLowerCase());
 }
 
+export function getTokenId(address: Address): string {
+  return padAddress(address.toHexString().toLowerCase());
+}
+
 export function getCrucibleIdFromTokenId(tokenId: BigInt): string {
   return padAddress(tokenId.toHexString().toLowerCase())
 }
@@ -78,7 +82,7 @@ export function createLock(
   // log.warning("creating lock: {}", [id]);
   let lock = new Lock(id);
   lock.delegate = delegate;
-  lock.token = token;
+  lock.token = getTokenId(token);
   lock.crucible = crucible.id;
   return lock;
 }
