@@ -7,16 +7,18 @@ import {
   Value,
 } from "@graphprotocol/graph-ts";
 
-import { AludelCreated, AludelV15, GeyserCreated, OwnershipTransferred, RewardClaimed, RewardClaimed1 as RewardClaimedLegacy } from "../generated/templates/AludelV15Template/AludelV15";
+import { AludelCreated, AludelV15, GeyserCreated, OwnershipTransferred, RewardClaimed, RewardClaimed1 as RewardClaimedLegacy, VaultFactoryRegistered, VaultFactoryRemoved } from "../generated/templates/AludelV15Template/AludelV15";
 
 import {
   CrucibleEntity,
   ERC20Token,
   Leaderboard,
+  ProgramVaultFactory,
   Reward,
   RewardProgram,
+  VaultFactory,
 } from "../generated/schema";
-import { getAludelId, getCrucibleId, getRewardId, getTokenId } from "./utils";
+import { getAludelId, getCrucibleId, getIdFromAddress, getRewardId, getTokenId } from "./utils";
 import { createERC20Token } from "./erc20Token";
 
 export function handleGeyserCreation(event: GeyserCreated): void {
@@ -137,4 +139,39 @@ export function handleRewardClaimedLegacy(event: RewardClaimedLegacy): void {
   // log.warning("prereward: {} {} {} {}", [crucibleAddress.toHex(), aludel.toHex(), token.toHex(), amount.toString()])
 
   _handleRewardClaimed(event, aludel, tokenAddress, amount, crucibleAddress);
+}
+
+
+export function handleVaultFactoryRegistered(event: VaultFactoryRegistered): void {
+  let factoryId = getIdFromAddress(event.params.factory)
+  let programId = getIdFromAddress(event.address)
+  
+  let program = RewardProgram.load(programId)
+  if (program == null) {
+    log.error('unable to load program {}', [programId])
+    return
+  }
+
+  let factory = VaultFactory.load(factoryId)
+  if (factory == null) {
+    factory = new VaultFactory(factoryId)
+    factory.save()
+  }
+  
+  let id = programId.concat('-').concat(factoryId)
+  let programFactory = new ProgramVaultFactory(id)
+  programFactory.rewardProgram = programId
+  programFactory.vaultFactory = factoryId
+  programFactory.save()
+
+}
+
+export function handleVaultFactoryRemoved(event: VaultFactoryRemoved): void {
+  let factoryId = getIdFromAddress(event.params.factory)
+  let programId = getIdFromAddress(event.address)
+  
+  let id = programId.concat('-').concat(factoryId)
+  
+  store.remove('ProgramVaultFactory', id)
+
 }
