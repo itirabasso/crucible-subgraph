@@ -83,7 +83,7 @@ dataSources:
         - event: InstanceAdded(address)
           handler: handleInstanceAdded
         - event: InstanceRemoved(address)
-          handler: handleRemoved
+          handler: handleInstanceRemoved
         - event: TemplateAdded(address)
           handler: handleTemplateAdded
         - event: TemplateUpdated(address,bool)
@@ -152,3 +152,7 @@ templates:
           handler: handleRewardClaimed
         - event: RewardClaimed(address,address,address,uint256)
           handler: handleRewardClaimedLegacy
+        - event: VaultFactoryRegistered(address)
+          handler: handleVaultFactoryRegistered
+        - event: VaultFactoryRemoved(address)
+          handler: handleVaultFactoryRemoved

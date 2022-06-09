@@ -64,6 +64,23 @@ type RewardProgram @entity {
     stakingTokenUrl: String
 
     rewards: [Reward!]! @derivedFrom(field: "rewardProgram")
+
+    vaultFactories: [ProgramVaultFactory!]! @derivedFrom(field: "rewardProgram")
+}
+
+type VaultFactory @entity {
+    # vault address
+    id: ID!
+
+    rewardPrograms: [ProgramVaultFactory!]! @derivedFrom(field: "vaultFactory")
+}
+
+type ProgramVaultFactory @entity {
+    # factory-program
+    id: ID!
+
+    vaultFactory: VaultFactory!
+    rewardProgram: RewardProgram!
 }
 
 type Template @entity {
