@@ -30,7 +30,7 @@ export function handleInstanceAdded(event: InstanceAdded): void {
 
   rewardProgram.template = data.value.template
   rewardProgram.stakingTokenUrl = data.value.stakingTokenUrl
-  rewardProgram.creation = data.value.creation
+  rewardProgram.startTime = data.value.startTime
   rewardProgram.name = data.value.name
   rewardProgram.save()
  }
