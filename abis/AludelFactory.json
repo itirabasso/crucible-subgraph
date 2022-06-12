@@ -170,6 +170,11 @@
         "internalType": "string",
         "name": "stakingTokenUrl",
         "type": "string"
+      },
+      {
+        "internalType": "uint64",
+        "name": "startTime",
+        "type": "uint64"
       }
     ],
     "name": "addProgram",
@@ -183,6 +188,11 @@
         "internalType": "address",
         "name": "template",
         "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
       }
     ],
     "name": "addTemplate",
@@ -213,24 +223,6 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "template",
-        "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "disabled",
-        "type": "bool"
-      }
-    ],
-    "name": "disableTemplate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "program",
         "type": "address"
       }
@@ -246,7 +238,7 @@
           },
           {
             "internalType": "uint64",
-            "name": "creation",
+            "name": "startTime",
             "type": "uint64"
           },
           {
@@ -308,6 +300,11 @@
             "internalType": "bool",
             "name": "disabled",
             "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
           }
         ],
         "internalType": "struct EnumerableSet.TemplateData",
@@ -333,6 +330,11 @@
             "internalType": "bool",
             "name": "disabled",
             "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
           }
         ],
         "internalType": "struct EnumerableSet.TemplateData[]",
@@ -410,6 +412,26 @@
         "internalType": "string",
         "name": "stakingTokenUrl",
         "type": "string"
+      },
+      {
+        "internalType": "uint64",
+        "name": "startTime",
+        "type": "uint64"
+      },
+      {
+        "internalType": "address",
+        "name": "vaultFactory",
+        "type": "address"
+      },
+      {
+        "internalType": "address[]",
+        "name": "bonusTokens",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address",
+        "name": "ownerAddress",
+        "type": "address"
       },
       {
         "internalType": "bytes",
@@ -493,6 +515,24 @@
       }
     ],
     "name": "updateStakingTokenUrl",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "template",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "disabled",
+        "type": "bool"
+      }
+    ],
+    "name": "updateTemplate",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
