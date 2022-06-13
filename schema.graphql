@@ -58,7 +58,7 @@ type RewardProgram @entity {
     
     owner: Bytes
 
-    template: Bytes
+    template: Template
     name: String
     startTime: BigInt
     stakingTokenUrl: String
