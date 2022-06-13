@@ -34,6 +34,6 @@ jobs:
     - name: build
       run: node node_modules/@graphprotocol/graph-cli/bin/graph build
     - name: deploy
-      run: node node_modules/@graphprotocol/graph-cli/bin/graph deploy --product hosted-service --deploy-key $GRAPH_APIKEY alchemistcoin/crucible-goerli 
+      run: node node_modules/@graphprotocol/graph-cli/bin/graph deploy --product hosted-service --deploy-key $GRAPH_APIKEY alchemistcoin/crucible-test-2 
       env: 
         GRAPH_APIKEY: ${{ secrets.GRAPH_APIKEY }}
