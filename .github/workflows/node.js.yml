@@ -11,36 +11,21 @@ on:
 
 jobs:
   build:
-    name: Test
+
     runs-on: ubuntu-latest
+
+    # strategy:
+    #   matrix:
+    #     node-version: [12.x, 14.x, 16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: borales/actions-yarn@v3.0.0
-        with:
-          cmd: yarn install
-      - uses: borales/actions-yarn@v3.0.0
-        with:
-          cmd: yarn mustache config/config.goerli.json subgraph.template.yaml > subgraph.yaml
-      - uses: borales/actions-yarn@v3.0.0
-        with:
-          cmd: yarn deploy test-2
-
-#   build:
-
-#     runs-on: ubuntu-latest
-
-#     # strategy:
-#     #   matrix:
-#     #     node-version: [12.x, 14.x, 16.x]
-#         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
-#     steps:
-#     - uses: actions/checkout@v3
-#     - name: Use Node.js
-#       uses: actions/setup-node@v3
-#       with:
-#         node-version: '16.x'
-#     - name: Install dependencies
-# #      run: yarn install --frozen-lockfile
-#     - run: yarn mustache config/config.goerli.json subgraph.template.yaml > subgraph.yaml
-#     - run: yarn deploy test-2
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16.x'
+    - name: Install dependencies
+      run: npm install
+    - run: npm node_modules/mustache/bin/mustache config/config.goerli.json subgraph.template.yaml > subgraph.yaml
+    - run: yarn deploy test-2
