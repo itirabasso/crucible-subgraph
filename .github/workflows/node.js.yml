@@ -29,6 +29,10 @@ jobs:
       run: npm install
     - name: prepare
       run: node node_modules/mustache/bin/mustache config/config.goerli.json subgraph.template.yaml > subgraph.yaml
+    - name: codegen
+      run: node node_modules/@graphprotocol/graph-cli/bin/graph codegen
+    - name: build
+      run: node node_modules/@graphprotocol/graph-cli/bin/graph build
     - name: deploy
       run: node node_modules/@graphprotocol/graph-cli/bin/graph deploy --product hosted-service --deploy-key $GRAPH_APIKEY alchemistcoin/crucible-goerli 
       env: 
