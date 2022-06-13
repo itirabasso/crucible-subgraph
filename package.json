@@ -4,7 +4,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "prepare": "mustache config/config.$0.json subgraph.template.yaml > subgraph.yaml",
+    "prepare-subgraph": "mustache config/config.$0.json subgraph.template.yaml > subgraph.yaml",
     "deploy": "graph deploy --product hosted-service alchemistcoin/crucible-$0",
     "create-local": "graph create --node http://localhost:8020/ crucible",
     "remove-local": "graph remove --node http://localhost:8020/ crucible",
