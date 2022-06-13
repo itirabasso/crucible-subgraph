@@ -30,6 +30,6 @@ jobs:
     - name: prepare
       run: node node_modules/mustache/bin/mustache config/config.goerli.json subgraph.template.yaml > subgraph.yaml
     - name: deploy
-      run: node node_modules/@graphprotocol/graph-cli/bin/graph deploy --product hosted-service alchemistcoin/crucible-goerli ${{ secrets.GRAPH_APIKEY }} 
+      run: node node_modules/@graphprotocol/graph-cli/bin/graph deploy --product hosted-service alchemistcoin/crucible-goerli ${{GRAPH_APIKEY}} 
       env: 
-          GRAPH_APIKEY: ${{ secrets.GRAPH_APIKEY }}
+        GRAPH_APIKEY: ${{ secrets.GRAPH_APIKEY }}
