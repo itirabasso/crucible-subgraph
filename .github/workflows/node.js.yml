@@ -26,9 +26,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: Install dependencies
       run: yarn
-    - name: Prepare
-    - run: yarn mustache config/config.goerli.json subgraph.template.yaml > subgraph.yaml
-    - name: Deploy
-    - run: npm run deploy test-2
+      run: yarn mustache config/config.goerli.json subgraph.template.yaml > subgraph.yaml
+      run: npm run deploy test-2
