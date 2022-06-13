@@ -26,6 +26,6 @@ jobs:
       with:
         node-version: '16.x'
     - name: Install dependencies
-      run: yarn --frozen-lockfile
+      run: yarn install --frozen-lockfile
     - run: yarn mustache config/config.goerli.json subgraph.template.yaml > subgraph.yaml
     - run: yarn deploy test-2
