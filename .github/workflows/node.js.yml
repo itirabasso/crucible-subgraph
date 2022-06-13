@@ -25,7 +25,12 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '16.x'
+
+    - name: aaaa
+      run: echo "asdada"
     - name: Install dependencies
       run: npm install
-    - run: npm node_modules/mustache/bin/mustache config/config.goerli.json subgraph.template.yaml > subgraph.yaml
-    - run: yarn deploy test-2
+    - name: prepare
+      run: npm node_modules/mustache/bin/mustache config/config.goerli.json subgraph.template.yaml > subgraph.yaml
+    - name: deploy
+      run: yarn deploy test-2
