@@ -58,9 +58,9 @@ type RewardProgram @entity {
     
     owner: Bytes
 
-    template: Bytes
+    template: Template
     name: String
-    creation: BigInt
+    startTime: BigInt
     stakingTokenUrl: String
 
     rewards: [Reward!]! @derivedFrom(field: "rewardProgram")
@@ -87,6 +87,7 @@ type Template @entity {
     # contract address
     id: ID!
     disabled: Boolean
+    name: String
 }
 
 type Reward @entity {

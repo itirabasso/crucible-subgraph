@@ -28,9 +28,9 @@ export function handleInstanceAdded(event: InstanceAdded): void {
     rewardProgram.owner = owner.value;
   }
 
-  rewardProgram.template = data.value.template
+  rewardProgram.template = getIdFromAddress(data.value.template)
   rewardProgram.stakingTokenUrl = data.value.stakingTokenUrl
-  rewardProgram.creation = data.value.creation
+  rewardProgram.startTime = data.value.startTime
   rewardProgram.name = data.value.name
   rewardProgram.save()
  }
@@ -44,8 +44,18 @@ export function handleInstanceAdded(event: InstanceAdded): void {
 
 export function handleTemplateAdded(event: TemplateAdded): void {
   let id = getIdFromAddress(event.params.template)
+  
   let template = new Template(id)
+
+  let factory = AludelFactory.bind(dataSource.address())
+
+  let data = factory.try_getTemplate(event.params.template)
+  if (data.reverted) {
+    log.error("handleInstanceAdded: failed get template data", []);
+  }
+
   template.disabled = false
+  template.name = data.value.name
   template.save()
 }
 export function handleTemplateUpdated(event: TemplateUpdated): void {
