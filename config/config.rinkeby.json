@@ -1,6 +1,6 @@
 {
     "CrucibleFactory": "0xf92d86483438bde1d68e501ce15470155dee08b3",
-    "AludelV15": "0x6Edb9A98DdBc1ad7Bb9AA56463318E6FE608a6b6",
-    "startBlock": 8338180,
+    "AludelFactory": "0x49da3501a982c3f5155db4a99b5ecaab1eab06b4",
+    "startBlock": 8338179,
     "network": "rinkeby"
 }

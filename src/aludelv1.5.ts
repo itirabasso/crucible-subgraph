@@ -7,17 +7,59 @@ import {
   Value,
 } from "@graphprotocol/graph-ts";
 
-import { RewardClaimed, RewardClaimed1 as RewardClaimedLegacy } from "../generated/templates/AludelV15Template/AludelV15";
+import { AludelCreated, AludelV15, GeyserCreated, OwnershipTransferred, RewardClaimed, RewardClaimed1 as RewardClaimedLegacy, VaultFactoryRegistered, VaultFactoryRemoved } from "../generated/templates/AludelV15Template/AludelV15";
 
 import {
   CrucibleEntity,
   ERC20Token,
   Leaderboard,
+  ProgramVaultFactory,
   Reward,
   RewardProgram,
+  VaultFactory,
 } from "../generated/schema";
-import { getAludelId, getCrucibleId, getRewardId, getTokenId } from "./utils";
+import { getAludelId, getCrucibleId, getIdFromAddress, getRewardId, getTokenId } from "./utils";
 import { createERC20Token } from "./erc20Token";
+
+export function handleGeyserCreation(event: GeyserCreated): void {
+  _handleCreation(event.address)
+}
+
+export function handleAludelCreation(event: AludelCreated): void {
+  _handleCreation(event.address)
+}
+
+function _handleCreation(aludelAddress: Address): void {
+  let aludelContract = AludelV15.bind(aludelAddress)
+  
+  let aludelId = getAludelId(aludelAddress)
+  let aludel = RewardProgram.load(aludelId)
+  if (aludel == null) {
+    log.error('unable to load aludel {}', [aludelId])
+    return;
+  }
+
+  let owner = aludelContract.try_owner()
+  if (owner.reverted) {
+    log.error("handleCreation: failed get aludel owner: {}", [aludelAddress.toHexString()]);
+  } else {
+    aludel.owner = owner.value
+  }
+
+  aludel.save()
+}
+
+export function handleOwnershipTransferred(event: OwnershipTransferred): void {
+  let aludelId = getAludelId(event.address)
+  let aludel = RewardProgram.load(aludelId)
+  if (aludel == null) {
+    log.error('unable to load aludel {}', [aludelId])
+    return;
+  }
+
+  aludel.owner = event.params.newOwner
+  aludel.save()
+}
 
 export function _handleRewardClaimed(
   event: ethereum.Event,
@@ -97,4 +139,39 @@ export function handleRewardClaimedLegacy(event: RewardClaimedLegacy): void {
   // log.warning("prereward: {} {} {} {}", [crucibleAddress.toHex(), aludel.toHex(), token.toHex(), amount.toString()])
 
   _handleRewardClaimed(event, aludel, tokenAddress, amount, crucibleAddress);
+}
+
+
+export function handleVaultFactoryRegistered(event: VaultFactoryRegistered): void {
+  let factoryId = getIdFromAddress(event.params.factory)
+  let programId = getIdFromAddress(event.address)
+  
+  let program = RewardProgram.load(programId)
+  if (program == null) {
+    log.error('unable to load program {}', [programId])
+    return
+  }
+
+  let factory = VaultFactory.load(factoryId)
+  if (factory == null) {
+    factory = new VaultFactory(factoryId)
+    factory.save()
+  }
+  
+  let id = programId.concat('-').concat(factoryId)
+  let programFactory = new ProgramVaultFactory(id)
+  programFactory.rewardProgram = programId
+  programFactory.vaultFactory = factoryId
+  programFactory.save()
+
+}
+
+export function handleVaultFactoryRemoved(event: VaultFactoryRemoved): void {
+  let factoryId = getIdFromAddress(event.params.factory)
+  let programId = getIdFromAddress(event.address)
+  
+  let id = programId.concat('-').concat(factoryId)
+  
+  store.remove('ProgramVaultFactory', id)
+
 }

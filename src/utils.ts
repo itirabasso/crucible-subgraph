@@ -59,6 +59,10 @@ export function getAludelId(address: Address): string {
   return padAddress(address.toHexString().toLowerCase());
 }
 
+export function getIdFromAddress(address: Address): string {
+  return padAddress(address.toHexString().toLowerCase());
+}
+
 export function getRewardId(
   crucible: Address,
   aludel: Address,

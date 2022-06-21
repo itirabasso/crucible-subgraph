@@ -76,6 +76,25 @@
       "inputs": [
         {
           "indexed": false,
+          "internalType": "address",
+          "name": "rewardPool",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "powerSwitch",
+          "type": "address"
+        }
+      ],
+      "name": "GeyserCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
           "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
