@@ -1,18 +1,18 @@
 import { dataSource, log, store } from "@graphprotocol/graph-ts";
-import { AludelFactory, InstanceAdded, InstanceRemoved, TemplateAdded, TemplateUpdated } from "../generated/AludelFactory/AludelFactory";
+import { AludelFactory, ProgramAdded, TemplateAdded, TemplateUpdated } from "../generated/AludelFactory/AludelFactory";
 import { RewardProgram, Template } from "../generated/schema";
 import { AludelV15Template } from "../generated/templates";
 import { AludelV15 } from "../generated/templates/AludelV15Template/AludelV15";
 import { getAludelId, getIdFromAddress } from "./utils";
 
-export function handleInstanceAdded(event: InstanceAdded): void {
-  let aludelAddress = event.params.instance
+export function handleProgramAdded(event: ProgramAdded): void {
+  let aludelAddress = event.params.program
   AludelV15Template.create(aludelAddress)
   let aludelId = getAludelId(aludelAddress)
 
 
   let factory = AludelFactory.bind(dataSource.address())
-  let data = factory.try_getProgram(aludelAddress)
+  let data = factory.try_programs(aludelAddress)
   if (data.reverted) {
     log.error("handleInstanceAdded: failed get program data: {}", [aludelAddress.toHexString()]);
     return;
@@ -35,12 +35,13 @@ export function handleInstanceAdded(event: InstanceAdded): void {
   rewardProgram.save()
  }
 
- export function handleInstanceRemoved(event: InstanceRemoved): void {
-  let aludelAddress = event.params.instance
-  AludelV15Template.create(aludelAddress)  
-  let aludelId = getAludelId(aludelAddress)
-  store.remove('RewardProgram', aludelId)
- }
+// we need a remove instance / delist aludel event emitted
+//  export function handleInstanceRemoved(event: InstanceRemoved): void {
+//   let aludelAddress = event.params.instance
+//   AludelV15Template.create(aludelAddress)  
+//   let aludelId = getAludelId(aludelAddress)
+//   store.remove('RewardProgram', aludelId)
+//  }
 
 export function handleTemplateAdded(event: TemplateAdded): void {
   let id = getIdFromAddress(event.params.template)
@@ -58,13 +59,14 @@ export function handleTemplateAdded(event: TemplateAdded): void {
   template.name = data.value.name
   template.save()
 }
-export function handleTemplateUpdated(event: TemplateUpdated): void {
+export function handleTemplateChanged(event: TemplateUpdated): void {
   let id = getIdFromAddress(event.params.template);
   let template = Template.load(id)
   if (template === null) {
     log.error('handleTemplateUpdate: cannot load template with id', [id])
     return;
   }
+
   template.disabled = event.params.disabled
   template.save()
 }
