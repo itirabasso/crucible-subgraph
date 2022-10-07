@@ -203,13 +203,7 @@
       }
     ],
     "name": "addTemplate",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "templateIndex",
-        "type": "uint256"
-      }
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -265,9 +259,9 @@
       {
         "components": [
           {
-            "internalType": "address",
-            "name": "template",
-            "type": "address"
+            "internalType": "bool",
+            "name": "listed",
+            "type": "bool"
           },
           {
             "internalType": "bool",
@@ -280,39 +274,9 @@
             "type": "string"
           }
         ],
-        "internalType": "struct EnumerableSet.TemplateData",
+        "internalType": "struct AludelFactory.TemplateData",
         "name": "",
         "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getTemplates",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "template",
-            "type": "address"
-          },
-          {
-            "internalType": "bool",
-            "name": "disabled",
-            "type": "bool"
-          },
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          }
-        ],
-        "internalType": "struct EnumerableSet.TemplateData[]",
-        "name": "",
-        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
