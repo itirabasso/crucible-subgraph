@@ -82,6 +82,8 @@ dataSources:
       eventHandlers:
         - event: ProgramAdded(address,string,string)
           handler: handleProgramAdded
+        - event: ProgramDelisted(address)
+          handler: handleProgramDelisted
         - event: TemplateAdded(address)
           handler: handleTemplateAdded
         - event: TemplateUpdated(address,bool)
