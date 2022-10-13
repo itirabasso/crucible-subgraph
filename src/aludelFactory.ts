@@ -1,5 +1,5 @@
 import { dataSource, log, store } from "@graphprotocol/graph-ts";
-import { AludelFactory, ProgramAdded, TemplateAdded, TemplateUpdated } from "../generated/AludelFactory/AludelFactory";
+import { AludelFactory, ProgramAdded, ProgramDelisted, TemplateAdded, TemplateUpdated } from "../generated/AludelFactory/AludelFactory";
 import { RewardProgram, Template } from "../generated/schema";
 import { AludelV15Template } from "../generated/templates";
 import { AludelV15 } from "../generated/templates/AludelV15Template/AludelV15";
@@ -8,6 +8,7 @@ import { getAludelId, getIdFromAddress } from "./utils";
 export function handleProgramAdded(event: ProgramAdded): void {
   let aludelAddress = event.params.program
   AludelV15Template.create(aludelAddress)
+
   let aludelId = getAludelId(aludelAddress)
 
 
@@ -36,12 +37,13 @@ export function handleProgramAdded(event: ProgramAdded): void {
  }
 
 // we need a remove instance / delist aludel event emitted
-//  export function handleInstanceRemoved(event: InstanceRemoved): void {
-//   let aludelAddress = event.params.instance
-//   AludelV15Template.create(aludelAddress)  
-//   let aludelId = getAludelId(aludelAddress)
-//   store.remove('RewardProgram', aludelId)
-//  }
+ export function handleProgramDelisted(event: ProgramDelisted): void {
+  let aludelAddress = event.params.program
+  // AludelV15Template.create(aludelAddress)
+  let aludelId = getAludelId(aludelAddress)
+  log.warning("delisting program {}", [aludelAddress.toString(), aludelId.toString()])
+  store.remove('RewardProgram', aludelId)
+ }
 
 export function handleTemplateAdded(event: TemplateAdded): void {
   let id = getIdFromAddress(event.params.template)
@@ -53,6 +55,7 @@ export function handleTemplateAdded(event: TemplateAdded): void {
   let data = factory.try_getTemplate(event.params.template)
   if (data.reverted) {
     log.error("handleInstanceAdded: failed get template data", []);
+    return;
   }
 
   template.disabled = false
