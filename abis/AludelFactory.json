@@ -102,6 +102,19 @@
         "internalType": "address",
         "name": "program",
         "type": "address"
+      }
+    ],
+    "name": "ProgramDelisted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "program",
+        "type": "address"
       },
       {
         "indexed": false,
