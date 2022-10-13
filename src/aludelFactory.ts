@@ -58,7 +58,7 @@ export function handleTemplateAdded(event: TemplateAdded): void {
     return;
   }
 
-  template.disabled = false
+  template.disabled = data.value.disabled
   template.name = data.value.name
   template.save()
 }
