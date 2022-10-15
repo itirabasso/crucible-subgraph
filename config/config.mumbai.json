@@ -1,5 +1,6 @@
 {
     "CrucibleFactory": "0x5D15d226303cB96AC2EA7f760a313eA6bB36C508",
+    "AludelFactory": "0x96C47C53bc5a482F33F0Cc8A9d5C467E24C2CeD9",
     "startBlock": 24823890,
     "network": "mumbai"
 }
