@@ -1,12 +1,28 @@
 [
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint16",
+        "name": "bps",
+        "type": "uint16"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
     "inputs": [],
-    "name": "InstanceAlreadyRegistered",
+    "name": "AludelAlreadyRegistered",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "InstanceNotRegistered",
+    "name": "AludelNotRegistered",
     "type": "error"
   },
   {
@@ -33,51 +49,6 @@
     "inputs": [],
     "name": "TemplateNotRegistered",
     "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "instance",
-        "type": "address"
-      }
-    ],
-    "name": "InstanceAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "instance",
-        "type": "address"
-      }
-    ],
-    "name": "InstanceRemoved",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "program",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "name": "NameChanged",
-    "type": "event"
   },
   {
     "anonymous": false,
@@ -110,11 +81,55 @@
       {
         "indexed": false,
         "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
         "name": "url",
         "type": "string"
       }
     ],
-    "name": "StakingTokenURLChanged",
+    "name": "ProgramAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "program",
+        "type": "address"
+      }
+    ],
+    "name": "ProgramDelisted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "program",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "url",
+        "type": "string"
+      }
+    ],
+    "name": "ProgramChanged",
     "type": "event"
   },
   {
@@ -193,16 +208,15 @@
         "internalType": "string",
         "name": "name",
         "type": "string"
+      },
+      {
+        "internalType": "bool",
+        "name": "disabled",
+        "type": "bool"
       }
     ],
     "name": "addTemplate",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "templateIndex",
-        "type": "uint256"
-      }
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -220,60 +234,26 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "program",
-        "type": "address"
-      }
-    ],
-    "name": "getProgram",
+    "inputs": [],
+    "name": "feeBps",
     "outputs": [
       {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "template",
-            "type": "address"
-          },
-          {
-            "internalType": "uint64",
-            "name": "startTime",
-            "type": "uint64"
-          },
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
-            "name": "stakingTokenUrl",
-            "type": "string"
-          }
-        ],
-        "internalType": "struct AludelFactory.ProgramData",
+        "internalType": "uint16",
         "name": "",
-        "type": "tuple"
+        "type": "uint16"
       }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "program",
-        "type": "address"
-      }
-    ],
-    "name": "getStakingTokenUrl",
+    "inputs": [],
+    "name": "feeRecipient",
     "outputs": [
       {
-        "internalType": "string",
+        "internalType": "address",
         "name": "",
-        "type": "string"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -292,9 +272,9 @@
       {
         "components": [
           {
-            "internalType": "address",
-            "name": "template",
-            "type": "address"
+            "internalType": "bool",
+            "name": "listed",
+            "type": "bool"
           },
           {
             "internalType": "bool",
@@ -307,7 +287,7 @@
             "type": "string"
           }
         ],
-        "internalType": "struct EnumerableSet.TemplateData",
+        "internalType": "struct AludelFactory.TemplateData",
         "name": "",
         "type": "tuple"
       }
@@ -316,80 +296,18 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getTemplates",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "template",
-            "type": "address"
-          },
-          {
-            "internalType": "bool",
-            "name": "disabled",
-            "type": "bool"
-          },
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          }
-        ],
-        "internalType": "struct EnumerableSet.TemplateData[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      }
-    ],
-    "name": "instanceAt",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "instance",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "instanceCount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "count",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
-        "name": "instance",
+        "name": "who",
         "type": "address"
       }
     ],
-    "name": "isInstance",
+    "name": "isAludel",
     "outputs": [
       {
         "internalType": "bool",
-        "name": "validity",
+        "name": "",
         "type": "bool"
       }
     ],
@@ -464,8 +382,75 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "program",
+        "type": "address"
+      }
+    ],
+    "name": "programs",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "template",
+            "type": "address"
+          },
+          {
+            "internalType": "uint64",
+            "name": "startTime",
+            "type": "uint64"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "stakingTokenUrl",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct AludelFactory.ProgramData",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "bps",
+        "type": "uint16"
+      }
+    ],
+    "name": "setFeeBps",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "setFeeRecipient",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -494,19 +479,6 @@
         "internalType": "string",
         "name": "newName",
         "type": "string"
-      }
-    ],
-    "name": "updateName",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "program",
-        "type": "address"
       },
       {
         "internalType": "string",
@@ -514,7 +486,7 @@
         "type": "string"
       }
     ],
-    "name": "updateStakingTokenUrl",
+    "name": "updateProgram",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
