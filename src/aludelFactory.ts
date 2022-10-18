@@ -19,7 +19,10 @@ export function handleProgramAdded(event: ProgramAdded): void {
     return;
   }
 
-  let rewardProgram = new RewardProgram(aludelId)
+  let rewardProgram = RewardProgram.load(aludelId)
+  if (rewardProgram == null) {
+    rewardProgram = new RewardProgram(aludelId)
+  }
 
   let aludel = AludelV15.bind(aludelAddress)
   let owner = aludel.try_owner()
