@@ -37,19 +37,6 @@ function bumpCrucibleCounter(): Counters {
   return counter;
 }
 
-function initAludels(): void {
-  let aludels = getAludels()
-
-  aludels.forEach((value, index) => {
-    let aludelAddress = Address.fromString(value)
-    AludelV15Template.create(Address.fromString(value))
-    let aludelId = getAludelId(aludelAddress)
-
-    // reviewme: maybe we should create the entity when the program is deployed?
-    let rewardProgram = new RewardProgram(aludelId)
-    rewardProgram.save()
-  })
-}
 
 function createCrucible(event: Transfer): void {
 
@@ -62,17 +49,6 @@ function createCrucible(event: Transfer): void {
   entity.owner = to
   entity.blockNumber = event.block.number
   entity.factory = event.address
-
-  // hack: if there isn't a config entity with id 'aludel' we initialize the aludels.
-  let config = Config.load('aludel')
-  if (config == null) {
-    initAludels()
-    // create the config with id 'aludel'
-    config = new Config('aludel')
-    config.save()
-  } else {
-    // aludels already initialized, no need to do anything
-  }
 
   if(getCrucibleFactoryAddress() == entity.factory) {
     entity.index = getCrucibleCounter()
