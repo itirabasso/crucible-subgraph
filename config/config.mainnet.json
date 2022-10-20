@@ -1,6 +1,7 @@
 {
     "CrucibleFactory": "0x54e0395CFB4f39beF66DBCd5bD93Cca4E9273D56",
     "UniversalVaultFactory": "0x8A09fFA4d4310c7F59DC538a1481D8Ba2214Cef0",
+    "AludelFactory": "0xfe32d8c1dcc3e31d2286c4ed467c16e213e2d9b7",
     "startBlock": 11880064,
     "network": "mainnet"
 }
