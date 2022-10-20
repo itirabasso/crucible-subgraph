@@ -21,34 +21,6 @@ import {
 import { getAludelId, getCrucibleId, getIdFromAddress, getRewardId, getTokenId } from "./utils";
 import { createERC20Token } from "./erc20Token";
 
-export function handleGeyserCreation(event: GeyserCreated): void {
-  _handleCreation(event.address)
-}
-
-export function handleAludelCreation(event: AludelCreated): void {
-  _handleCreation(event.address)
-}
-
-function _handleCreation(aludelAddress: Address): void {
-  let aludelContract = AludelV15.bind(aludelAddress)
-  
-  let aludelId = getAludelId(aludelAddress)
-  let aludel = RewardProgram.load(aludelId)
-  if (aludel == null) {
-    log.error('unable to load aludel {}', [aludelId])
-    return;
-  }
-
-  let owner = aludelContract.try_owner()
-  if (owner.reverted) {
-    log.error("handleCreation: failed get aludel owner: {}", [aludelAddress.toHexString()]);
-  } else {
-    aludel.owner = owner.value
-  }
-
-  aludel.save()
-}
-
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   let aludelId = getAludelId(event.address)
   let aludel = RewardProgram.load(aludelId)
