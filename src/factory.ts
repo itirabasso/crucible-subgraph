@@ -1,18 +1,12 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 import {
   InstanceAdded,
   Transfer,
 } from "../generated/CrucibleFactory/CrucibleFactory";
-import { Config, Counters, CrucibleEntity, Leaderboard, RewardProgram } from "../generated/schema";
-import { CrucibleTemplate, AludelV15Template } from "../generated/templates";
-import { VaultFactoryRegistered } from "../generated/templates/AludelV15Template/AludelV15";
-import { getAludels, getCrucibleFactoryAddress} from "./config";
-import {
-  getAludelId,
-  getCrucibleIdFromTokenId,
-  isAddressZero,
-} from "./utils";
-
+import { Counters, CrucibleEntity, Leaderboard } from "../generated/schema";
+import { CrucibleTemplate } from "../generated/templates";
+import { getCrucibleFactoryAddress } from "./config";
+import { getCrucibleIdFromTokenId, isAddressZero } from "./utils";
 
 export function handleInstanceAdded(event: InstanceAdded): void {
   CrucibleTemplate.create(event.params.instance);
@@ -21,9 +15,9 @@ export function handleInstanceAdded(event: InstanceAdded): void {
 function getCrucibleCounter(): BigInt {
   let counter = Counters.load("crucible-counter");
   if (counter == null) {
-    return BigInt.fromI32(0)
+    return BigInt.fromI32(0);
   }
-  return counter.count 
+  return counter.count;
 }
 
 function bumpCrucibleCounter(): Counters {
@@ -37,30 +31,27 @@ function bumpCrucibleCounter(): Counters {
   return counter;
 }
 
-
 function createCrucible(event: Transfer): void {
+  let to = event.params.to;
+  let tokenId = event.params.tokenId;
 
-  let to = event.params.to
-  let tokenId = event.params.tokenId
-  
   let id = getCrucibleIdFromTokenId(tokenId);
   let entity = new CrucibleEntity(id);
-  entity.timestamp = event.block.timestamp
-  entity.owner = to
-  entity.blockNumber = event.block.number
-  entity.factory = event.address
+  entity.timestamp = event.block.timestamp;
+  entity.owner = to;
+  entity.blockNumber = event.block.number;
+  entity.factory = event.address;
 
-  if(getCrucibleFactoryAddress() == entity.factory) {
-    entity.index = getCrucibleCounter()
-    bumpCrucibleCounter()
+  if (getCrucibleFactoryAddress() == entity.factory) {
+    entity.index = getCrucibleCounter();
+    bumpCrucibleCounter();
   }
-  entity.rewardsLength = BigInt.fromI32(0)
-  entity.save()
+  entity.rewardsLength = BigInt.fromI32(0);
+  entity.save();
 
-  let leaderboard = new Leaderboard(id)
-  leaderboard.points = BigInt.fromI32(0)
-  leaderboard.save()
-
+  let leaderboard = new Leaderboard(id);
+  leaderboard.points = BigInt.fromI32(0);
+  leaderboard.save();
 }
 
 export function handleTransfer(event: Transfer): void {
@@ -70,7 +61,7 @@ export function handleTransfer(event: Transfer): void {
 
   // creation
   if (isAddressZero(from)) {
-    createCrucible(event)
+    createCrucible(event);
   }
   // transfer
   if (!isAddressZero(to) && !isAddressZero(from)) {
