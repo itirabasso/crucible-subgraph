@@ -113,6 +113,29 @@ export function handleRewardClaimedLegacy(event: RewardClaimedLegacy): void {
   _handleRewardClaimed(event, aludel, tokenAddress, amount, crucibleAddress);
 }
 
+export function registerVaultFactory(factoryAddress: Address, programAddress: Address): void {
+  let factoryId = getIdFromAddress(factoryAddress)
+  let programId = getIdFromAddress(programAddress)
+
+  let program = RewardProgram.load(programId)
+  if (program == null) {
+    log.error('unable to load program {}', [programId])
+    return
+  }
+
+  let factory = VaultFactory.load(factoryId)
+  if (factory == null) {
+    factory = new VaultFactory(factoryId)
+    factory.save()
+  }
+  
+  let id = programId.concat('-').concat(factoryId)
+  let programFactory = new ProgramVaultFactory(id)
+  programFactory.rewardProgram = programId
+  programFactory.vaultFactory = factoryId
+  programFactory.save()  
+
+}
 
 export function handleVaultFactoryRegistered(event: VaultFactoryRegistered): void {
   let factoryId = getIdFromAddress(event.params.factory)

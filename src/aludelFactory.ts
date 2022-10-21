@@ -1,8 +1,9 @@
-import { dataSource, log, store } from "@graphprotocol/graph-ts";
+import { BigInt, dataSource, log, store } from "@graphprotocol/graph-ts";
 import { AludelFactory, ProgramAdded, ProgramDelisted, TemplateAdded, TemplateUpdated } from "../generated/AludelFactory/AludelFactory";
 import { RewardProgram, Template } from "../generated/schema";
 import { AludelV15Template } from "../generated/templates";
 import { AludelV15 } from "../generated/templates/AludelV15Template/AludelV15";
+import { registerVaultFactory } from "./aludelv1.5";
 import { getAludelId, getIdFromAddress } from "./utils";
 
 export function handleProgramAdded(event: ProgramAdded): void {
@@ -25,6 +26,7 @@ export function handleProgramAdded(event: ProgramAdded): void {
   }
 
   let aludel = AludelV15.bind(aludelAddress)
+
   let owner = aludel.try_owner()
   if (owner.reverted) {
     log.error("handleInstanceAdded: failed get program's owner: {}", [aludelAddress.toHexString()]);
@@ -37,7 +39,23 @@ export function handleProgramAdded(event: ProgramAdded): void {
   rewardProgram.startTime = data.value.startTime
   rewardProgram.name = data.value.name
   rewardProgram.save()
- }
+
+  let factoryLength = aludel.try_getVaultFactorySetLength()
+  if (factoryLength.reverted) {
+    log.error(": unable to get vault factory length in {}", [aludelAddress.toHexString()]);
+    return; 
+  }
+  for (let index = 0; index < factoryLength.value.toI32(); index++) {
+    let factoryAddress = aludel.try_getVaultFactoryAtIndex(BigInt.fromI32(index))
+    if (factoryAddress.reverted) {
+      log.error(": unable to get vault factory address at index {} in {}", [index.toString(), aludelAddress.toHexString()]);
+      return;  
+    }
+    registerVaultFactory(factoryAddress.value, aludelAddress); 
+  }
+
+}
+
 
 // we need a remove instance / delist aludel event emitted
  export function handleProgramDelisted(event: ProgramDelisted): void {
