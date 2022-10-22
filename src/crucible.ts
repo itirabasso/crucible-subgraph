@@ -8,13 +8,30 @@ import {
   BigInt,
   store,
 } from "@graphprotocol/graph-ts";
-import { CrucibleEntity, ERC20Token, Leaderboard, Lock, Stake, Unstake } from "../generated/schema";
-import {getCrucibleId, getLockId, getStakeId, getTokenId, getUnstakeId} from "./utils";
+import { CrucibleEntity, ERC20Token, Leaderboard, Lock, RewardProgram, Stake, Unstake } from "../generated/schema";
+import {getAludelId, getCrucibleId, getLockId, getStakeId, getTokenId, getUnstakeId} from "./utils";
 import { createERC20Token } from "./erc20Token";
+import { AludelV15Template } from "../generated/templates";
+import { AludelV15 } from "../generated/templates/AludelV15Template/AludelV15";
 
 export function handleLocked(event: Locked): void {
   let crucibleId = getCrucibleId(event.address);
   let crucible = CrucibleEntity.load(crucibleId);
+
+  let aludelAddress = event.params.delegate
+  let maybeAludel = AludelV15.bind(aludelAddress)
+  // if this call reverts the delegate dont have a compatible abi with aludel.
+  let length = maybeAludel.try_getVaultFactorySetLength();
+  if (length.reverted) {
+    log.warning('delegate is not an aludel', [])
+  } else {
+    let program = RewardProgram.load(getAludelId(aludelAddress))
+    if (program == null) {
+      AludelV15Template.create(aludelAddress)
+      program = new RewardProgram(getAludelId(aludelAddress))
+      program.save()
+    }
+  }
 
   let delegate = event.params.delegate;
   let tokenAddress = event.params.token;
