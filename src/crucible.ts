@@ -23,7 +23,7 @@ export function handleLocked(event: Locked): void {
   // if this call reverts the delegate dont have a compatible abi with aludel.
   let length = maybeAludel.try_getVaultFactorySetLength();
   if (length.reverted) {
-    log.warning('delegate is not an aludel', [])
+    log.warning('delegate is not an aludel: {}', [aludelAddress.toString()])
   } else {
     let program = RewardProgram.load(getAludelId(aludelAddress))
     if (program == null) {
